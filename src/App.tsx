@@ -1,24 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
+import {Query} from 'react-apollo'
+import skillsQuery from './queries/skills'
+import {Skills, SkillsVariables} from './queries/types/Skills'
+import {SkillType} from "./types/graphql-global-types";
+
 import './App.css';
+
+
+class SkillsQuery extends Query<Skills, SkillsVariables>{}
 
 const App: React.FC = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
+        <SkillsQuery
+            query={skillsQuery}
+            variables={{ type: SkillType.SERVER }}
+        >
+            {({ data }) => (
+                <>
+                    <h1>Skills</h1>
+                    {data && data.skills && data.skills.map(skill => {
+                        return <div>{skill.name} - {skill.type}</div>;
+                    })}
+                </>
+            )}
+        </SkillsQuery>
     </div>
   );
 }
