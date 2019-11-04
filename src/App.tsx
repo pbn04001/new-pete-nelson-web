@@ -6,14 +6,12 @@ import {SkillType} from "./types/graphql-global-types";
 
 import './App.css';
 
-class SkillsQuery extends Query<Skills, SkillsVariables>{}
-
 const App: React.FC = () => {
   return (
     <div className="App">
       <header className="App-header">
       </header>
-        <SkillsQuery
+        <Query<Skills, SkillsVariables>
             query={skillsQuery}
             variables={{ type: SkillType.SERVER }}
         >
@@ -25,7 +23,7 @@ const App: React.FC = () => {
                     })}
                 </>
             )}
-        </SkillsQuery>
+        </Query>
     </div>
   );
 }
