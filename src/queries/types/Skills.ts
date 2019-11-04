@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { SkillType } from "../../types/graphql-global-types";
+import { SkillType } from "./../../types/graphql-global-types";
 
 // ====================================================
 // GraphQL query operation: Skills
@@ -12,6 +12,7 @@ export interface Skills_skills {
   __typename: "Skill";
   name: string;
   type: SkillType;
+  description: string | null;
 }
 
 export interface Skills {
