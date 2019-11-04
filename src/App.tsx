@@ -6,7 +6,6 @@ import {SkillType} from "./types/graphql-global-types";
 
 import './App.css';
 
-
 class SkillsQuery extends Query<Skills, SkillsVariables>{}
 
 const App: React.FC = () => {
