@@ -143,7 +143,7 @@
             "deprecationReason": null
           },
           {
-            "name": "description",
+            "name": "location",
             "description": "",
             "args": [],
             "type": {
@@ -151,8 +151,8 @@
               "name": "String",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "Field is no longer available"
           }
         ],
         "inputFields": null,

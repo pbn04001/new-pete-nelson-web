@@ -19,7 +19,7 @@ const App: React.FC = () => {
                 <>
                     <h1>Skills</h1>
                     {data && data.skills && data.skills.map(skill => {
-                        return <div>{skill.name} - {skill.type} - {skill.description}</div>;
+                        return <div>{skill.name} - {skill.type}</div>;
                     })}
                 </>
             )}
