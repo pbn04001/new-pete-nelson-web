@@ -4,9 +4,10 @@ import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost'
 import { ApolloProvider } from 'react-apollo'
 import { apiAwsKey } from './config';
 
-import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+import './index.css';
 
 const httpLink = new HttpLink({ uri: 'https://m7j3sltz0m.execute-api.us-west-2.amazonaws.com/dev/graphql' });
 
