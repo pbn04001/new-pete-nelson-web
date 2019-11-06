@@ -5,6 +5,7 @@ export default gql`
     skills(type: $type) {
       name
       type
+      description
     }
   }
 `

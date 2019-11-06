@@ -18,7 +18,7 @@ const App: React.FC = () => {
         {({data}) => (
           <>
             <h1>Skills</h1>
-            {data?.skills.map(skill => {
+            {data && data.skills && data.skills.map(skill => {
               return (
                 <div>{skill.name} - {skill.type}</div>
               );
@@ -33,7 +33,7 @@ const App: React.FC = () => {
         {({data}) => (
           <>
             <h1>Jobs</h1>
-            {data?.jobs.map(job => (
+            {data && data.jobs && data.jobs.map(job => (
               <div className="job">
                 <div className="job__title">{job.title}</div>
                 <div className="job_company">{job.company}</div>
