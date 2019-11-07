@@ -1,12 +1,13 @@
 import React from 'react';
+import { withApollo } from 'react-apollo'
 import { ApolloClient, InMemoryCache } from 'apollo-boost';
 import { useQuery } from 'react-apollo-hooks';
 import providerQuery from '../queries/providers'
-import {Providers as ProvidersGQL, Providers_providers } from "../queries/types/Providers";
+import {Providers as ProvidersGQL, Providers_providers_providers } from "../queries/types/Providers";
 import {ProviderPrices, ProviderPrices_providerPrices } from "../queries/types/ProviderPrices";
 import providerPricesQuery from "../queries/providerPrices";
 
-const renderPrice = (provider: Providers_providers, prices?: ProviderPrices_providerPrices[]) => {
+const renderPrice = (provider: Providers_providers_providers, prices?: ProviderPrices_providerPrices[]) => {
   if (!prices) return null
 
   const price = prices.find(price => price.id === provider.id)?.price
@@ -16,13 +17,13 @@ const renderPrice = (provider: Providers_providers, prices?: ProviderPrices_prov
   return null;
 }
 
-type ProvidersProps = {
+type ProvidersViewProps = {
   client: ApolloClient<InMemoryCache>,
 }
 
-const ProvidersView: React.FC<ProvidersProps> = ({
+const ProvidersView: React.FC<ProvidersViewProps> = ({
   client,
-}: ProvidersProps) => {
+}: ProvidersViewProps) => {
   const { data: providers, loading: loading } = useQuery<ProvidersGQL>(providerQuery, {client })
   const { data: prices } = useQuery<ProviderPrices>(providerPricesQuery, { client })
 
@@ -30,7 +31,8 @@ const ProvidersView: React.FC<ProvidersProps> = ({
 
   return (
     <div>
-      {providers?.providers.map(provider => (
+      <h1>Provider Prices</h1>
+      {providers?.providers.providers.map(provider => (
         <div key={provider.id}>
           <div>{provider.name}</div>
           <div>{provider.location}</div>
@@ -42,4 +44,4 @@ const ProvidersView: React.FC<ProvidersProps> = ({
   )
 }
 
-export default ProvidersView
+export default withApollo(ProvidersView)
