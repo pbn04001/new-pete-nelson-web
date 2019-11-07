@@ -31,12 +31,12 @@ const ProvidersView: React.FC<ProvidersProps> = ({
   return (
     <div>
       {providers?.providers.map(provider => (
-        <>
+        <div key={provider.id}>
           <div>{provider.name}</div>
           <div>{provider.location}</div>
           {renderPrice(provider, prices?.providerPrices)}
           <br/>
-        </>
+        </div>
       ))}
     </div>
   )
