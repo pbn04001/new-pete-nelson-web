@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { withApollo } from 'react-apollo'
 import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo'
 import { apiAwsKey } from './config';
@@ -28,9 +29,11 @@ const client = new ApolloClient({
     cache: new InMemoryCache()
 });
 
+const AppWithApollo = withApollo(App)
+
 ReactDOM.render(
     <ApolloProvider client={client}>
-        <App />
+        <AppWithApollo />
     </ApolloProvider>,
     document.getElementById('root'));
 
