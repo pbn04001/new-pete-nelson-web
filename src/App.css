@@ -5,9 +5,14 @@ body {
     padding: 1rem 2rem;
 }
 
+.skill {
+    padding: 0 0 .5rem 0;
+}
+
 .job {
     margin-bottom: 1rem;
 }
+
 .job__title {
     font-size: 19px;
     font-weight: bold;

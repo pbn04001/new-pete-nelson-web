@@ -60,8 +60,7 @@ const ProvidersPricingView: React.FC<ProvidersPricingViewProps> = ({
   }
 
   return (
-    <div>
-      <h1>Provider Prices</h1>
+    <>
       {providers.providers.map(provider => (
         <div key={provider.id}>
           <div className="provider">{provider.name}</div>
@@ -70,7 +69,7 @@ const ProvidersPricingView: React.FC<ProvidersPricingViewProps> = ({
           <br/>
         </div>
       ))}
-    </div>
+    </>
   )
 }
 

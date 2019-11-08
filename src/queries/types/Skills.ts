@@ -12,7 +12,6 @@ export interface Skills_skills {
   __typename: "Skill";
   name: string;
   type: SkillType;
-  description: string | null;
 }
 
 export interface Skills {

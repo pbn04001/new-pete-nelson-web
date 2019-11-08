@@ -21,7 +21,7 @@ const JobsView: React.FC = () => {
             <h1>Skills</h1>
             {data?.skills.map(skill => {
               return (
-                <div key={skill.name}>{skill.name} - {skill.type}</div>
+                <div className="skill" key={skill.name}>{skill.name} - {skill.type}</div>
               );
             })}
           </>

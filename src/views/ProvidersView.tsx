@@ -15,10 +15,14 @@ const ProvidersView: React.FC<ProvidersViewProps> = ({
 }: ProvidersViewProps) => {
   const { data: providers, loading } = useQuery<ProvidersGQL>(providerQuery, { client })
 
-  if (loading || !providers?.providers) return <div>Loading...</div>
-
   return (
-    <ProvidersPricingView providers={providers.providers} client={client} />
+    <>
+      <h1>Provides</h1>
+      {loading || !providers?.providers ?
+        <div>Loading Providers...</div> :
+        <ProvidersPricingView providers={providers.providers} client={client} />
+      }
+    </>
   )
 }
 

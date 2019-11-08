@@ -8,8 +8,8 @@ import JobsView from "./views/JobsView";
 const App: React.FC = () => {
   return (
     <div className="App">
-      {/*<JobsView />*/}
-      <ProvidersView />
+      <JobsView />
+      {/*<ProvidersView />*/}
     </div>
   );
 }
