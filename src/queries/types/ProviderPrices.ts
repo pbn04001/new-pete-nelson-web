@@ -15,3 +15,7 @@ export interface ProviderPrices_providerPrices {
 export interface ProviderPrices {
   providerPrices: ProviderPrices_providerPrices[];
 }
+
+export interface ProviderPricesVariables {
+  uuid: string;
+}
