@@ -1,6 +1,5 @@
 import React from 'react';
-import { Query, withApollo } from 'react-apollo'
-import { ApolloClient, InMemoryCache } from 'apollo-boost';
+import { Query } from 'react-apollo'
 
 import skillsQuery from '../queries/skills'
 import jobsQuery from '../queries/jobs'
