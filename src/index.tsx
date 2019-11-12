@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { withApollo } from 'react-apollo'
 import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo'
-import { apiAwsKey } from './config';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -13,13 +12,6 @@ import './index.css';
 const httpLink = new HttpLink({ uri: 'https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/dev/graphql' });
 
 const authLink = new ApolloLink((operation, forward) => {
-    // Use the setContext method to set the HTTP headers.
-    operation.setContext({
-        headers: {
-            ['x-api-key']: apiAwsKey
-        }
-    });
-
     // Call the next link in the middleware chain.
     return forward(operation);
 });
