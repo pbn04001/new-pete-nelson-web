@@ -1,4 +1,9 @@
 version: 0.2
+
+env:
+  parameter-store:
+    DEPLOY_BUCKET: "petenelson-web"
+
 phases:
   install:
     runtime-versions:
@@ -14,23 +19,23 @@ phases:
   post_build:
     commands:
       # copy the contents of /build to S3
-      - aws s3 cp --recursive --acl public-read ./build s3://${DeployBucket}/
+      - aws s3 cp --recursive --acl public-read ./build s3://$DEPLOY_BUCKET/
       # set the cache-control headers for service-worker.js to prevent
       # browser caching
       - >
         aws s3 cp --acl public-read
         --cache-control="max-age=0, no-cache, no-store, must-revalidate"
-        ./build/service-worker.js s3://${DeployBucket}/
+        ./build/service-worker.js s3://$DEPLOY_BUCKET/
       # set the cache-control headers for index.html and error.html to prevent
       # browser caching
       - >
         aws s3 cp --acl public-read
         --cache-control="max-age=0, no-cache, no-store, must-revalidate"
-        ./build/index.html s3://${DeployBucket}/
+        ./build/index.html s3://$DEPLOY_BUCKET/
       - >
         aws s3 cp --acl public-read
         --cache-control="max-age=0, no-cache, no-store, must-revalidate"
-        ./build/error.html s3://${DeployBucket}/
+        ./build/error.html s3://$DEPLOY_BUCKET/
       # invalidate the CloudFront cache for index.html and service-worker.js
       # to force CloudFront to update its edge locations with the new versions
       - >
