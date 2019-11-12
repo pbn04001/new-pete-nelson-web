@@ -9,7 +9,7 @@ import * as serviceWorker from './serviceWorker';
 
 import './index.css';
 
-const httpLink = new HttpLink({ uri: 'https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/dev/graphql' });
+const httpLink = new HttpLink({ uri: 'https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/prod/graphql' });
 
 const authLink = new ApolloLink((operation, forward) => {
     // Call the next link in the middleware chain.
