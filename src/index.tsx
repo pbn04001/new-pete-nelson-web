@@ -9,6 +9,9 @@ import * as serviceWorker from './serviceWorker';
 
 import './index.css';
 
+console.log('ENVIRONMENT', process.env.ENVIRONMENT)
+console.log('ENVIRONMENT2', process.env.REACT_APP_ENVIRONMENT)
+
 const httpLink = new HttpLink({ uri: 'https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/prod/graphql' });
 
 const authLink = new ApolloLink((operation, forward) => {
