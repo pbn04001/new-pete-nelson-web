@@ -4,15 +4,15 @@ import { withApollo } from 'react-apollo'
 import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo'
 
+import {isProd} from "./utils/envs";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 import './index.css';
 
-console.log('ENVIRONMENT', process.env.ENVIRONMENT)
-console.log('ENVIRONMENT2', process.env.REACT_APP_ENVIRONMENT)
+const url = `https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/${isProd() ? 'prod' : 'dev'}/graphql`
 
-const httpLink = new HttpLink({ uri: 'https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/prod/graphql' });
+const httpLink = new HttpLink({ uri: url });
 
 const authLink = new ApolloLink((operation, forward) => {
     // Call the next link in the middleware chain.
