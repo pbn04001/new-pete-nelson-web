@@ -7,18 +7,13 @@ import {
 } from 'react-router-dom'
 
 import './App.css'
-
-import Home from "./views/home/Home"
+import Home from "./views/home/Home";
 import Resume from "./views/resume/Resume";
-
-const Other = () => {
-  return <div>Other</div>
-}
 
 const App: React.FC = () => {
   return (
-    <div className="app">
-      <Router>
+    <Router>
+      <div>
         <nav>
           <ul>
             <li>
@@ -27,25 +22,30 @@ const App: React.FC = () => {
             <li>
               <Link to="/resume">Resume</Link>
             </li>
-            <li>
-              <Link to="/other">Other</Link>
-            </li>
           </ul>
         </nav>
+
+        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/">
-            <Home />
-          </Route>
           <Route path="/resume">
             <Resume />
           </Route>
-          <Route path="/other">
-            <Other />
+          <Route path="/">
+            <Home />
           </Route>
         </Switch>
-      </Router>
-    </div>
+      </div>
+    </Router>
   );
 }
 
-export default App
+function About() {
+  return <h2>About</h2>;
+}
+
+function Users() {
+  return <h2>Users</h2>;
+}
+
+export default App;

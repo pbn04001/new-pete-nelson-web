@@ -10,7 +10,9 @@ import * as serviceWorker from './serviceWorker';
 
 import './index.css';
 
-const url = `https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/${isProd() ? 'prod' : 'dev'}/graphql`
+const url = isProd() ?
+  'https://ttu0bk9oc0.execute-api.us-west-2.amazonaws.com/prod/graphql' :
+  'https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/dev/graphql'
 
 const httpLink = new HttpLink({ uri: url });
 
