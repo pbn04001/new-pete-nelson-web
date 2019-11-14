@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'
 import ReactSVG from 'react-svg'
+import classNames from 'classnames'
 
 import './NavBar.scss'
-
-const classNames = require('classnames')
 
 const NavBar: React.FC = () => {
 

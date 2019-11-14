@@ -1,3 +1,5 @@
+import 'styles/main.scss';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { withApollo } from 'react-apollo'
@@ -7,8 +9,6 @@ import { ApolloProvider } from 'react-apollo'
 import {isProd} from "./utils/envs";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-
-import './styles/main.scss';
 
 const url = isProd() ?
   'https://ttu0bk9oc0.execute-api.us-west-2.amazonaws.com/prod/graphql' :

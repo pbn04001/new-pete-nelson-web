@@ -9,12 +9,10 @@ import NavBar from "components/navBar/NavBar";
 import Home from "views/home/Home";
 import Resume from "views/resume/Resume";
 
-import './App.scss'
-
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="app">
+      <div id="app">
         <NavBar />
         <Switch>
           <Route path="/resume">

@@ -1,10 +1,11 @@
 import React from 'react';
+import HomeScroll from "./HomeScroll";
 
 const Home: React.FC = () => {
 
   return (
     <div className="home">
-      Home
+      <HomeScroll />
     </div>
   );
 }
