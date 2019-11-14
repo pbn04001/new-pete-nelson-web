@@ -8,7 +8,7 @@ import {isProd} from "./utils/envs";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-import './index.css';
+import './styles/main.scss';
 
 const url = isProd() ?
   'https://ttu0bk9oc0.execute-api.us-west-2.amazonaws.com/prod/graphql' :

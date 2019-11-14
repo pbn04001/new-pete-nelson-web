@@ -1,0 +1,28 @@
+$half-spacing-unit: .25rem;
+$spacing-unit: .5rem;
+$spacing-unit-x2: 2 * $spacing-unit;
+$spacing-unit-x3: 3 * $spacing-unit;
+$spacing-unit-x4: 4 * $spacing-unit;
+$spacing-unit-x5: 5 * $spacing-unit;
+$spacing-unit-x6: 6 * $spacing-unit;
+$spacing-unit-x7: 7 * $spacing-unit;
+$spacing-unit-x8: 8 * $spacing-unit;
+$spacing-unit-x9: 9 * $spacing-unit;
+$spacing-unit-x10: 10 * $spacing-unit;
+$spacing-unit-x11: 11 * $spacing-unit;
+$spacing-unit-x12: 12 * $spacing-unit;
+$spacing-unit-x13: 13 * $spacing-unit;
+$spacing-unit-x14: 14 * $spacing-unit;
+$spacing-unit-x15: 15 * $spacing-unit;
+$spacing-unit-x16: 16 * $spacing-unit;
+$spacing-unit-x17: 17 * $spacing-unit;
+$spacing-unit-x18: 18 * $spacing-unit;
+$spacing-unit-x19: 19 * $spacing-unit;
+$spacing-unit-x20: 20 * $spacing-unit;
+
+@function spacingUnit($size) {
+  @return $spacing-unit * $size;
+}
+
+
+
