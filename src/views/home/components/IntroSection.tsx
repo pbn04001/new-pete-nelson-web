@@ -1,5 +1,3 @@
-import './introSection.scss'
-
 import React, { useState, useEffect, useRef } from 'react';
 import ReactSVG from "react-svg";
 import anime from 'animejs';
@@ -7,6 +5,7 @@ import anime from 'animejs';
 import {delayActionCheckVisible, delayAnimationCheckVisible, hideSectionAfterAnimation} from "../../../utils/animation";
 import {getClientHeight, getClientWidth} from "../../../utils/sizes";
 
+import './introSection.scss'
 
 type IntroSectionProps = {
   viewHeight: number,
@@ -14,6 +13,7 @@ type IntroSectionProps = {
   top: boolean,
   hash: string,
   completed: Function,
+  toggleShowing: Function,
 }
 
 const IntroSection: React.FC<IntroSectionProps> = ({
@@ -22,7 +22,9 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   top,
   completed,
   hash,
+  toggleShowing,
 }: IntroSectionProps) => {
+  const peteNelson = useRef<ReactSVG & (HTMLDivElement | HTMLSpanElement)>(null)
   const cloud1 = useRef<ReactSVG & (HTMLDivElement | HTMLSpanElement)>(null)
   const cloud2 = useRef<ReactSVG & (HTMLDivElement | HTMLSpanElement)>(null)
   const moon = useRef<ReactSVG & (HTMLDivElement | HTMLSpanElement)>(null)
@@ -35,7 +37,6 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   const section = useRef<HTMLDivElement>(null)
 
   const [visible, setVisible] = useState(show);
-  const [showing, setShowing] = useState(false);
   const [firstLoad, setFirstLoad] = useState(true)
 
   useEffect(() => {
@@ -111,10 +112,6 @@ const IntroSection: React.FC<IntroSectionProps> = ({
     return -1 * (128 + getClientWidth(introCard?.current));
   };
 
-  const animatePeteNelson = () => {
-    // TODO:
-  }
-
   const hideAnimated = () => {
     setVisible(false)
     if (moonBack.current?.container) {
@@ -134,7 +131,7 @@ const IntroSection: React.FC<IntroSectionProps> = ({
       translateY: moonOffScreen(),
       easing: 'easeInOutSine',
       duration: 400,
-    }, 300, { visible, section: section?.current }, false);
+    }, 300, { visible, section: section.current }, false);
 
     anime({
       targets: cloud1.current?.container,
@@ -162,21 +159,21 @@ const IntroSection: React.FC<IntroSectionProps> = ({
       translateY: skyLine2OffScreen(),
       easing: 'easeInOutSine',
       duration: 400,
-    }, 75, { visible, section: section?.current }, false);
+    }, 75, { visible, section: section.current }, false);
 
     delayAnimationCheckVisible({
       targets: skyLine3.current?.container,
       translateY: skyLine3OffScreen(),
       easing: 'easeInOutSine',
       duration: 400,
-    }, 150, { visible, section: section?.current }, false);
+    }, 150, { visible, section: section.current }, false);
 
-    hideSectionAfterAnimation(1000, { visible, section: section?.current });
+    hideSectionAfterAnimation(1000, { visible, section: section.current });
   }
 
   const showAnimated = (offset: number) => {
     setVisible(true)
-    setShowing(true)
+    toggleShowing(true)
     if (section.current) section.current.style.display = 'block';
 
     return new Promise((resolve) => {
@@ -206,7 +203,7 @@ const IntroSection: React.FC<IntroSectionProps> = ({
       if (moonBack.current?.container) moonBack.current.container.classList.remove('intro__moon_back--hide');
       delayActionCheckVisible(() => {
         if (moonBack.current?.container) moonBack.current.container.classList.add('intro__moon_back--show');
-      }, 300, { visible, section: section?.current }, true);
+      }, 300, { visible, section: section.current }, true);
 
       anime({
         targets: moon.current?.container,
@@ -250,16 +247,63 @@ const IntroSection: React.FC<IntroSectionProps> = ({
       })
         .finished
         .then(() => {
-          setShowing(false)
+          toggleShowing(false)
           resolve();
         });
     });
   };
 
+  const animatePeteNelson = () => {
+    if (introCard.current) introCard.current.style.transform = 'translateX(0px)';
+    anime({
+      targets: document.getElementById('name-p'),
+      loop: false,
+      direction: 'normal',
+      strokeDashoffset: [anime.setDashoffset, 0],
+      easing: 'easeInOutSine',
+      duration: 500,
+    });
+    anime({
+      targets: document.getElementById('name-n1'),
+      direction: 'normal',
+      strokeDashoffset: [anime.setDashoffset, 0],
+      easing: 'easeInOutSine',
+      delay: 500,
+      duration: 150,
+    });
+    anime({
+      targets: document.getElementById('name-n2'),
+      direction: 'normal',
+      strokeDashoffset: [anime.setDashoffset, 0],
+      easing: 'easeInOutSine',
+      delay: 650,
+      duration: 200,
+    });
+    anime({
+      targets: document.getElementById('name-n3'),
+      direction: 'normal',
+      strokeDashoffset: [anime.setDashoffset, 0],
+      easing: 'easeInOutSine',
+      delay: 850,
+      duration: 150,
+    });
+    anime({
+      targets: document.getElementById('name-mask-rectangle'),
+      width: ['0%', '100%'],
+      easing: 'easeInOutSine',
+      delay: 1000,
+      duration: 500,
+    });
+
+    delayActionCheckVisible(() => {
+      if (introCardSub.current) introCardSub.current.classList.add('intro__card_sub--show');
+    }, 1000, { visible, section: section.current}, true);
+  }
+
   return (
     <div ref={section} className="section intro">
       <div ref={introCard} className="intro__card">
-        {/*<h1><PeteNelson ref="peteNelson" class="intro__pete-nelson"/></h1>*/}
+        {<h1><ReactSVG src="/assets/images/pete_nelson.svg" ref={peteNelson} className="intro__pete-nelson" /></h1>}
         <div ref={introCardSub} className="intro__card_sub">
           <hr className="intro__card_bar"/>
           <h3 className="intro__card_text">Experienced Web Developer & Designer</h3>

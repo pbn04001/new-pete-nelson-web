@@ -11,6 +11,7 @@ const getViewHeight = (): number => {
 const HomeScroll: React.FC = () => {
   const [lockSection, setLockSection] = useState(null);
   const [currentSection, setCurrentSection] = useState(0)
+  const [showing, setShowing] = useState(true);
 
   const sectionCompleted = (hash: string) => {
     console.log('Completed', hash)
@@ -23,6 +24,7 @@ const HomeScroll: React.FC = () => {
         show={currentSection === 0}
         top={currentSection > 0}
         completed={sectionCompleted}
+        toggleShowing={setShowing}
         hash="intro"
       />
       <div className="scroll-down">

@@ -6,7 +6,6 @@ import classNames from 'classnames'
 import './NavBar.scss'
 
 const NavBar: React.FC = () => {
-
   const [isOpen, openMenu] = useState(false)
 
   const toggleMenu = () => {openMenu(!isOpen)}
