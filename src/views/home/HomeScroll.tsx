@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import './homeScroll.scss'
 import ReactSVG from "react-svg";
-import IntroSection from "./components/IntroSection";
+import IntroSection from "./components/intro/IntroSection";
 
 const getViewHeight = (): number => {
   return window.innerHeight;
