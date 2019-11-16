@@ -1,9 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
-import ReactSVG from "react-svg";
+import React, {useEffect, useRef, useState} from 'react';
 import anime from 'animejs';
 
-import {delayActionCheckVisible, delayAnimationCheckVisible, hideSectionAfterAnimation} from "../../../utils/animation";
-import {getClientHeight, getClientWidth} from "../../../utils/sizes";
+import {delayActionCheckVisible, delayAnimationCheckVisible, hideSectionAfterAnimation} from "utils/animation";
+import {getClientHeight, getClientWidth} from "utils/sizes";
+
+import PeteNelson from 'assets/images/PeteNelson'
+import Cloud1 from 'assets/images/Cloud1'
+import Cloud2 from 'assets/images/Cloud2'
+import Moon from 'assets/images/Moon'
+import MoonBack from 'assets/images/MoonBack'
+import SkyLine1 from 'assets/images/SkyLine1'
+import SkyLine2 from 'assets/images/SkyLine2'
+import SkyLine3 from 'assets/images/SkyLine3'
 
 import './introSection.scss'
 
@@ -24,14 +32,14 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   hash,
   toggleShowing,
 }: IntroSectionProps) => {
-  const peteNelson = useRef<ReactSVG & (HTMLDivElement | HTMLSpanElement)>(null)
-  const cloud1 = useRef<ReactSVG & (HTMLDivElement | HTMLSpanElement)>(null)
-  const cloud2 = useRef<ReactSVG & (HTMLDivElement | HTMLSpanElement)>(null)
-  const moon = useRef<ReactSVG & (HTMLDivElement | HTMLSpanElement)>(null)
-  const moonBack = useRef<ReactSVG & (HTMLDivElement | HTMLSpanElement)>(null)
-  const skyLine1 = useRef<ReactSVG & (HTMLDivElement | HTMLSpanElement)>(null)
-  const skyLine2 = useRef<ReactSVG & (HTMLDivElement | HTMLSpanElement)>(null)
-  const skyLine3 = useRef<ReactSVG & (HTMLDivElement | HTMLSpanElement)>(null)
+  const peteNelson = useRef<SVGSVGElement | null>(null)
+  const cloud1 = useRef<SVGSVGElement | null>(null)
+  const cloud2 = useRef<SVGSVGElement | null>(null)
+  const moon = useRef<SVGSVGElement | null>(null)
+  const moonBack = useRef<SVGSVGElement | null>(null)
+  const skyLine1 = useRef<SVGSVGElement | null>(null)
+  const skyLine2 = useRef<SVGSVGElement | null>(null)
+  const skyLine3 = useRef<SVGSVGElement | null>(null)
   const introCardSub = useRef<HTMLDivElement>(null)
   const introCard = useRef<HTMLDivElement>(null)
   const section = useRef<HTMLDivElement>(null)
@@ -45,8 +53,8 @@ const IntroSection: React.FC<IntroSectionProps> = ({
 
   useEffect(() => {
     if (show && (!visible || firstLoad)) {
-        showAnimated(top ? 0 : 1)
-          .then(() => { completed(hash) });
+      showAnimated(top ? 0 : 1)
+        .then(() => { completed(hash) });
     } else {
       completed(hash)
     }
@@ -55,37 +63,37 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   const reset = () => {
     const isVisible = visible && !firstLoad
     if (introCard.current) introCard.current.style.transform = `translateX(${isVisible ? 0 : introCardOffScreen()}px)`;
-    if (skyLine1.current?.container) skyLine1.current.container.style.transform = `translateY(${isVisible ? 0 : skyLine1OffScreen()}px)`;
-    if (skyLine2.current?.container) skyLine2.current.container.style.transform = `translateY(${isVisible ? 0 : skyLine2OffScreen()}px)`;
-    if (skyLine3.current?.container) skyLine3.current.container.style.transform = `translateY(${isVisible ? 0 : skyLine3OffScreen()}px)`;
-    if (moon.current?.container) moon.current.container.style.transform = `translateY(${isVisible ? 0 : moonOffScreen()}px)`;
-    if (cloud1.current?.container) cloud1.current.container.style.transform = `translateY(${isVisible ? 0 : cloud1OffScreen()}px)`;
-    if (cloud2.current?.container) cloud2.current.container.style.transform = `translateY(${isVisible ? 0 : cloud2OffScreen()}px)`;
+    if (skyLine1.current) skyLine1.current.style.transform = `translateY(${isVisible ? 0 : skyLine1OffScreen()}px)`;
+    if (skyLine2.current) skyLine2.current.style.transform = `translateY(${isVisible ? 0 : skyLine2OffScreen()}px)`;
+    if (skyLine3.current) skyLine3.current.style.transform = `translateY(${isVisible ? 0 : skyLine3OffScreen()}px)`;
+    if (moon.current) moon.current.style.transform = `translateY(${isVisible ? 0 : moonOffScreen()}px)`;
+    if (cloud1.current) cloud1.current.style.transform = `translateY(${isVisible ? 0 : cloud1OffScreen()}px)`;
+    if (cloud2.current) cloud2.current.style.transform = `translateY(${isVisible ? 0 : cloud2OffScreen()}px)`;
     if (section.current) section.current.style.display = isVisible ? 'block' : 'none';
   }
 
   const skyLine1OffScreen = (): number => {
-    return getClientHeight(skyLine1?.current?.container) + 50;
+    return getClientHeight(skyLine1?.current) + 50;
   };
 
   const skyLine2OffScreen = (): number => {
-    return getClientHeight(skyLine2?.current?.container) + 50;
+    return getClientHeight(skyLine2?.current) + 50;
   };
 
   const skyLine3OffScreen = (): number => {
-    return getClientHeight(skyLine3?.current?.container) + 50;
+    return getClientHeight(skyLine3?.current) + 50;
   };
 
   const cloud1OffScreen = (): number => {
-    return -1 * ((viewHeight * 0.025) + getClientHeight(cloud1?.current?.container) + 50);
+    return -1 * ((viewHeight * 0.025) + getClientHeight(cloud1?.current) + 50);
   };
 
   const cloud2OffScreen = (): number => {
-    return -1 * ((viewHeight * 0.19) + getClientHeight(cloud2?.current?.container) + 50);
+    return -1 * ((viewHeight * 0.19) + getClientHeight(cloud2?.current) + 50);
   };
 
   const moonOffScreen = (): number => {
-    return -1 * ((viewHeight * 0.10) + getClientHeight(moon?.current?.container) + 50);
+    return -1 * ((viewHeight * 0.10) + getClientHeight(moon?.current) + 50);
   };
 
   const skyLine1Movement = (offset: number): number => {
@@ -114,9 +122,9 @@ const IntroSection: React.FC<IntroSectionProps> = ({
 
   const hideAnimated = () => {
     setVisible(false)
-    if (moonBack.current?.container) {
-      moonBack.current.container.classList.remove('intro__moon_back--show')
-      moonBack.current.container.classList.add('intro__moon_back--hide')
+    if (moonBack.current) {
+      moonBack.current.classList.remove('intro__moon_back--show')
+      moonBack.current.classList.add('intro__moon_back--hide')
     }
 
     anime({
@@ -127,42 +135,42 @@ const IntroSection: React.FC<IntroSectionProps> = ({
     });
 
     delayAnimationCheckVisible({
-      targets: moon.current?.container,
+      targets: moon.current,
       translateY: moonOffScreen(),
       easing: 'easeInOutSine',
       duration: 400,
     }, 300, { visible, section: section.current }, false);
 
     anime({
-      targets: cloud1.current?.container,
+      targets: cloud1.current,
       translateY: cloud1OffScreen(),
       opacity: 0,
       easing: 'easeOutSine',
       duration: 1000,
     });
     anime({
-      targets: cloud2.current?.container,
+      targets: cloud2.current,
       translateY: cloud2OffScreen(),
       opacity: 0,
       easing: 'easeOutSine',
       duration: 1000,
     });
     anime({
-      targets: skyLine1.current?.container,
+      targets: skyLine1.current,
       translateY: skyLine1OffScreen(),
       easing: 'easeInOutSine',
       duration: 400,
     });
 
     delayAnimationCheckVisible({
-      targets: skyLine2.current?.container,
+      targets: skyLine2.current,
       translateY: skyLine2OffScreen(),
       easing: 'easeInOutSine',
       duration: 400,
     }, 75, { visible, section: section.current }, false);
 
     delayAnimationCheckVisible({
-      targets: skyLine3.current?.container,
+      targets: skyLine3.current,
       translateY: skyLine3OffScreen(),
       easing: 'easeInOutSine',
       duration: 400,
@@ -200,46 +208,46 @@ const IntroSection: React.FC<IntroSectionProps> = ({
 
   const showRemainingAnimated = (offset: number) => {
     return new Promise((resolve) => {
-      if (moonBack.current?.container) moonBack.current.container.classList.remove('intro__moon_back--hide');
+      if (moonBack.current) moonBack.current.classList.remove('intro__moon_back--hide');
       delayActionCheckVisible(() => {
-        if (moonBack.current?.container) moonBack.current.container.classList.add('intro__moon_back--show');
+        if (moonBack.current) moonBack.current.classList.add('intro__moon_back--show');
       }, 300, { visible, section: section.current }, true);
 
       anime({
-        targets: moon.current?.container,
+        targets: moon.current,
         translateY: 0,
         easing: 'easeOutSine',
         duration: 300,
       });
       anime({
-        targets: cloud1.current?.container,
+        targets: cloud1.current,
         translateY: cloud1Movement(offset),
         opacity: 0.6,
         easing: 'easeOutSine',
         duration: 1000,
       });
       anime({
-        targets: cloud2.current?.container,
+        targets: cloud2.current,
         translateY: cloud2Movement(offset),
         opacity: 0.6,
         easing: 'easeOutSine',
         duration: 1000,
       });
       anime({
-        targets: skyLine3.current?.container,
+        targets: skyLine3.current,
         translateY: skyLine3Movement(offset),
         easing: 'easeOutBack',
         duration: 500,
       });
       anime({
-        targets: skyLine2.current?.container,
+        targets: skyLine2.current,
         translateY: skyLine2Movement(offset),
         easing: 'easeOutBack',
         duration: 500,
         delay: 100,
       });
       anime({
-        targets: skyLine1.current?.container,
+        targets: skyLine1.current,
         translateY: skyLine1Movement(offset),
         easing: 'easeOutBack',
         duration: 500,
@@ -303,19 +311,22 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   return (
     <div ref={section} className="section intro">
       <div ref={introCard} className="intro__card">
-        {<h1><ReactSVG src="/assets/images/pete_nelson.svg" ref={peteNelson} className="intro__pete-nelson" /></h1>}
+        <h1><PeteNelson ref={peteNelson} className="intro__pete-nelson" /></h1>
         <div ref={introCardSub} className="intro__card_sub">
           <hr className="intro__card_bar"/>
           <h3 className="intro__card_text">Experienced Web Developer & Designer</h3>
         </div>
       </div>
-      <ReactSVG src="/assets/images/cloud_1.svg" ref={cloud1} className="intro__cloud intro__cloud--1"/>
-      <ReactSVG src="/assets/images/cloud_2.svg" ref={cloud2} className="intro__cloud intro__cloud--2"/>
-      <ReactSVG src="/assets/images/moon.svg" ref={moon} className="intro__moon"/>
-      <ReactSVG src="/assets/images/moon_back.svg" ref={moonBack} className="intro__moon_back"/>
-      <ReactSVG src="/assets/images/skyline_1.svg" ref={skyLine1} className="intro__sky_line intro__sky_line--1"/>
-      <ReactSVG src="/assets/images/skyline_2.svg" ref={skyLine2} className="intro__sky_line intro__sky_line--2"/>
-      <ReactSVG src="/assets/images/skyline_3.svg" ref={skyLine3} className="intro__sky_line intro__sky_line--3"/>
+      <svg>
+        <use xlinkHref="#education" />
+      </svg>
+      <Cloud1 ref={cloud1} className="intro__cloud intro__cloud--1"/>
+      <Cloud2 ref={cloud2} className="intro__cloud intro__cloud--2"/>
+      <Moon ref={moon} className="intro__moon" />
+      <MoonBack ref={moonBack} className="intro__moon_back"/>
+      <SkyLine1 ref={skyLine1} className="intro__sky_line intro__sky_line--1"/>
+      <SkyLine2 ref={skyLine2} className="intro__sky_line intro__sky_line--2" />
+      <SkyLine3 ref={skyLine3} className="intro__sky_line intro__sky_line--3"/>
     </div>
   );
 }

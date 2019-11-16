@@ -25,12 +25,12 @@ export function getScreenSizeMax(size: String): number {
   }
 }
 
-export function getClientHeight(client?: HTMLDivElement | HTMLSpanElement | null): number {
+export function getClientHeight(client?: HTMLDivElement | SVGSVGElement | null): number {
   if (!client) return 0;
   return client.clientHeight || (client.parentNode as HTMLDivElement | HTMLSpanElement).clientHeight;
 }
 
-export function getClientWidth(client?: HTMLDivElement | HTMLSpanElement | null): number {
+export function getClientWidth(client?: HTMLDivElement | SVGSVGElement | null): number {
   if (!client) return 0;
   return client.clientWidth || (client.parentNode as HTMLDivElement | HTMLSpanElement).clientWidth;
 }

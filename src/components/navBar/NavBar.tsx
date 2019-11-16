@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'
-import ReactSVG from 'react-svg'
 import classNames from 'classnames'
+
+import Svg from "components/svg/Svg";
 
 import './NavBar.scss'
 
@@ -41,10 +42,10 @@ const NavBar: React.FC = () => {
       </div>
 
       <a className="nav-bar__github" title="Pete Nelson GitHub" href="https://github.com/pbn04001">
-        <ReactSVG src="/assets/icons/github.svg" />
+        <Svg name="github" />
       </a>
       <a className="nav-bar__twitter" title="Pete Nelson Twitter" href="https://twitter.com/petenelsonweb">
-        <ReactSVG src="/assets/icons/twitter.svg" />
+        <Svg name="twitter" />
       </a>
     </nav>
   );

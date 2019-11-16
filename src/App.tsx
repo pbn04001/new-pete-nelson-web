@@ -11,19 +11,21 @@ import Resume from "views/resume/Resume";
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <div id="app">
-        <NavBar />
-        <Switch>
-          <Route path="/resume">
-            <Resume />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
+    <>
+      <Router>
+        <div id="app">
+          <NavBar />
+          <Switch>
+            <Route path="/resume">
+              <Resume />
+            </Route>
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
+        </div>
+      </Router>
+    </>
   );
 }
 
