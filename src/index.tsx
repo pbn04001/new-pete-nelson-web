@@ -10,6 +10,15 @@ import {isProd} from "./utils/envs";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+// const files = require.context('assets', true, /.*\.svg$/);
+// files.keys().forEach(files);
+
+// function importAll(r: __WebpackModuleApi.RequireContext) {
+//   return r.keys().map(r);
+// }
+//
+// const images = importAll(require.context('assets', false, /.*\.svg$/));
+
 const url = isProd() ?
   'https://ttu0bk9oc0.execute-api.us-west-2.amazonaws.com/prod/graphql' :
   'https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/dev/graphql'

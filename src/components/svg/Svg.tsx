@@ -19,7 +19,7 @@ const Svg = React.forwardRef<SVGSVGElement, SvgProps>(({
   className
 }, ref)=> {
   return (
-    <SVG ref={ref} src={`/assets/${type.valueOf()}/${name}.svg`} className={className} />
+    <div />
   );
 });
 

@@ -15,7 +15,7 @@ const Svg = React.forwardRef<SVGSVGElement, SvgProps>(({
       <clipPath id="name-mask">
         <rect id="name-mask-rectangle" x="0" y="0" width="100%" height="100%"/>
       </clipPath>
-      <g id="name-remaining" clip-path="url(#name-mask)">
+      <g id="name-remaining" clipPath="url(#name-mask)">
         <path className="cls-1"
               d="M260.05,279.94q-16.34,0-26.09-10.47t-9.77-26.58V240.1q0-16.82,9.24-27.69t24.8-10.82q15.28,0,23.72,9.21t8.45,24.91V246.8H245.33l-.14.42a19.56,19.56,0,0,0,5,12.23q4.42,4.79,12,4.79a39,39,0,0,0,11.23-1.36,51.83,51.83,0,0,0,9.77-4.29l5.51,12.59a37.64,37.64,0,0,1-12.07,6.27A52.26,52.26,0,0,1,260.05,279.94Zm-1.82-62.65a10.63,10.63,0,0,0-8.93,4.32,22.6,22.6,0,0,0-4,11.38l.21.35h25v-1.82q0-6.48-3-10.36T258.23,217.29Z"
               transform="translate(-135.89 -175.85)"/>
