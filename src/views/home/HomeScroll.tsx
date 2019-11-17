@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import './homeScroll.scss'
-import ReactSVG from "react-svg";
 import IntroSection from "./components/intro/IntroSection";
+import Svg from "../../components/svg/Svg";
 
 const getViewHeight = (): number => {
   return window.innerHeight;
@@ -36,7 +36,7 @@ const HomeScroll: React.FC = () => {
           <span>l</span>
           <span>l</span>
         </span>
-        <ReactSVG src="/assets/icons/arrow.svg" className="scroll-down__arrow" />
+        <Svg name="arrow" className="scroll-down__arrow" />
       </div>
     </div>
   );

@@ -4,16 +4,17 @@ import anime from 'animejs';
 import {delayActionCheckVisible, delayAnimationCheckVisible, hideSectionAfterAnimation} from "utils/animation";
 import {getClientHeight, getClientWidth} from "utils/sizes";
 
-import PeteNelson from 'assets/images/PeteNelson'
-import Cloud1 from 'assets/images/Cloud1'
-import Cloud2 from 'assets/images/Cloud2'
-import Moon from 'assets/images/Moon'
-import MoonBack from 'assets/images/MoonBack'
-import SkyLine1 from 'assets/images/SkyLine1'
-import SkyLine2 from 'assets/images/SkyLine2'
-import SkyLine3 from 'assets/images/SkyLine3'
+// import PeteNelson from 'assets/images/PeteNelson'
+// import Cloud1 from 'assets/images/Cloud1'
+// import Cloud2 from 'assets/images/Cloud2'
+// import Moon from 'assets/images/Moon'
+// import MoonBack from 'assets/images/MoonBack'
+// import SkyLine1 from 'assets/images/SkyLine1'
+// import SkyLine2 from 'assets/images/SkyLine2'
+// import SkyLine3 from 'assets/images/SkyLine3'
 
 import './introSection.scss'
+import Svg from "../../../../components/svg/Svg";
 
 type IntroSectionProps = {
   viewHeight: number,
@@ -311,22 +312,19 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   return (
     <div ref={section} className="section intro">
       <div ref={introCard} className="intro__card">
-        <h1><PeteNelson ref={peteNelson} className="intro__pete-nelson" /></h1>
+        <h1><Svg name="pete_nelson" ref={peteNelson} className="intro__pete-nelson" /></h1>
         <div ref={introCardSub} className="intro__card_sub">
           <hr className="intro__card_bar"/>
           <h3 className="intro__card_text">Experienced Web Developer & Designer</h3>
         </div>
       </div>
-      <svg>
-        <use xlinkHref="#education" />
-      </svg>
-      <Cloud1 ref={cloud1} className="intro__cloud intro__cloud--1"/>
+      {/*<Cloud1 ref={cloud1} className="intro__cloud intro__cloud--1"/>
       <Cloud2 ref={cloud2} className="intro__cloud intro__cloud--2"/>
       <Moon ref={moon} className="intro__moon" />
       <MoonBack ref={moonBack} className="intro__moon_back"/>
       <SkyLine1 ref={skyLine1} className="intro__sky_line intro__sky_line--1"/>
       <SkyLine2 ref={skyLine2} className="intro__sky_line intro__sky_line--2" />
-      <SkyLine3 ref={skyLine3} className="intro__sky_line intro__sky_line--3"/>
+      <SkyLine3 ref={skyLine3} className="intro__sky_line intro__sky_line--3"/>*/}
     </div>
   );
 }

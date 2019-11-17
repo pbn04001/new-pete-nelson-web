@@ -5,19 +5,14 @@ import ReactDOM from 'react-dom';
 import { withApollo } from 'react-apollo'
 import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo'
+import SVG from 'react-inlinesvg-2';
 
 import {isProd} from "./utils/envs";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-// const files = require.context('assets', true, /.*\.svg$/);
-// files.keys().forEach(files);
-
-// function importAll(r: __WebpackModuleApi.RequireContext) {
-//   return r.keys().map(r);
-// }
-//
-// const images = importAll(require.context('assets', false, /.*\.svg$/));
+const files = require.context('assets', true, /.*\.svg$/);
+files.keys().forEach(files);
 
 const url = isProd() ?
   'https://ttu0bk9oc0.execute-api.us-west-2.amazonaws.com/prod/graphql' :
@@ -39,7 +34,8 @@ const AppWithApollo = withApollo(App)
 
 ReactDOM.render(
     <ApolloProvider client={client}>
-        <AppWithApollo />
+      <SVG src={`/sprite.svg`} />
+      <AppWithApollo />
     </ApolloProvider>,
     document.getElementById('root'));
 

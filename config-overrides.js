@@ -1,4 +1,5 @@
 const path = require('path')
+const SpritePlugin = require('svg-sprite-loader/plugin');
 
 module.exports = {
   webpack: function(config, env) {
@@ -33,6 +34,22 @@ module.exports = {
         }
       }]
     })
+
+    config.module.rules.push({
+      test: /\.svg$/,
+      include: [
+        /src(\/|\\)assets/,
+      ],
+      loader: 'svg-sprite-loader',
+      options: {
+        extract: true,
+        spriteFilename: 'sprite.svg'
+      }
+    })
+
+    config.plugins.push(
+      new SpritePlugin()
+    )
 
     return config;
   }

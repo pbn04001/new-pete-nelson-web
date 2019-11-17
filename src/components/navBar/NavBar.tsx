@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 
-import SVG from "react-inlinesvg-2";
-
 import './NavBar.scss'
-
+import Svg from "../svg/Svg";
 
 const NavBar: React.FC = () => {
   const [isOpen, openMenu] = useState(false)
@@ -43,10 +41,10 @@ const NavBar: React.FC = () => {
       </div>
 
       <a className="nav-bar__github" title="Pete Nelson GitHub" href="https://github.com/pbn04001">
-        <SVG src="/assets/icons/github.svg" />
+        <Svg name="github" />
       </a>
       <a className="nav-bar__twitter" title="Pete Nelson Twitter" href="https://twitter.com/petenelsonweb">
-        <SVG src="/assets/icons/twitter.svg" />
+        <Svg name="twitter" />
       </a>
     </nav>
   );
