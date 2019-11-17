@@ -38,13 +38,18 @@ module.exports = {
     config.module.rules.push({
       test: /\.svg$/,
       include: [
-        /src(\/|\\)assets/,
+        /src(\/|\\)assets(\/|\\)icons/,
       ],
-      loader: 'svg-sprite-loader',
-      options: {
-        extract: true,
-        spriteFilename: 'sprite.svg'
-      }
+      exclude: /src(\/|\\)assets(\/|\\)images/,
+      use: [{
+        loader: 'svg-sprite-loader',
+        options: {
+          extract: true,
+          spriteFilename: 'sprite.svg'
+        },
+      },
+      'svgo-loader'
+      ]
     })
 
     config.plugins.push(
