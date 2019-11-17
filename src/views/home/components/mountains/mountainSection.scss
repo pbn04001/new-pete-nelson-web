@@ -1,0 +1,102 @@
+@import "src/styles/_globals.scss";
+
+.mountains {
+  background-color: $black;
+
+  &__card {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    &_sub {
+      @include font-delta;
+      text-align: center;
+      color: $white;
+      background-color: $transparent-gray;
+      padding: $spacing-unit-x3 $spacing-unit-x3 $spacing-unit-x6 $spacing-unit-x3;
+      margin: $spacing-unit-x2;
+    }
+  }
+  &__title {
+    color: $white;
+    display: block;
+    width: 100%;
+    flex: 0 0 100%;
+    text-align: center;
+    margin: $spacing-unit-x5 0 0 0;
+  }
+  &__mountains {
+    display: none;
+    position: absolute;
+    width: 100%;
+    bottom: -6vw;
+    left: 0;
+
+    &--1 {
+      z-index: 11;
+    }
+    &--2 {
+      z-index: 2;
+    }
+  }
+
+  &__clouds {
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    bottom: -6vw;
+    left: 0;
+    opacity: .15;
+  }
+
+  h4 {
+    margin-top: $spacing-unit-x4;
+    color: $gray;
+  }
+}
+
+@media (min-width: $breakpoint-sm) {
+  .mountains {
+    background-color: transparent;
+
+    &__title {
+      color: $dark-teal;
+      margin-top: $spacing-unit-x8;
+    }
+
+    &__clouds {
+      opacity: 0;
+    }
+
+    &__mountains {
+      display: block;
+    }
+
+    &__card_sub {
+      color: $black;
+      background-color: $transparent-white;
+      @include font-delta;
+      padding: $spacing-unit-x4 $spacing-unit-x4 $spacing-unit-x20 $spacing-unit-x4;
+      margin: $spacing-unit-x4 $spacing-unit-x12 0 $spacing-unit-x12;
+    }
+
+    &__tech_list {
+      @include font-gamma;
+    }
+
+    h4 {
+      color: $dark-teal;
+    }
+  }
+}
+
+@media (min-width: $breakpoint-md) {
+  .mountains {
+    &__card_sub {
+      @include font-gamma;
+      padding-bottom: spacingUnit(30);
+    }
+  }
+}

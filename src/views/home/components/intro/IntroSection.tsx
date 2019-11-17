@@ -4,33 +4,41 @@ import anime from 'animejs';
 import {delayActionCheckVisible, delayAnimationCheckVisible, hideSectionAfterAnimation} from "utils/animation";
 import {getClientHeight, getClientWidth} from "utils/sizes";
 
-import PeteNelson from 'assets/images/PeteNelson'
-import Cloud1 from 'assets/images/Cloud1'
-import Cloud2 from 'assets/images/Cloud2'
-import Moon from 'assets/images/Moon'
-import MoonBack from 'assets/images/MoonBack'
-import SkyLine1 from 'assets/images/SkyLine1'
-import SkyLine2 from 'assets/images/SkyLine2'
-import SkyLine3 from 'assets/images/SkyLine3'
+import PeteNelson from 'assets/components/PeteNelson'
+import Cloud1 from 'assets/components/Cloud1'
+import Cloud2 from 'assets/components/Cloud2'
+import Moon from 'assets/components/Moon'
+import MoonBack from 'assets/components/MoonBack'
+import SkyLine1 from 'assets/components/SkyLine1'
+import SkyLine2 from 'assets/components/SkyLine2'
+import SkyLine3 from 'assets/components/SkyLine3'
 
 import './introSection.scss'
 
 type IntroSectionProps = {
-  viewHeight: number,
-  show: boolean,
-  top: boolean,
-  hash: string,
-  completed: Function,
-  toggleShowing: Function,
+  viewHeight: number
+  show: boolean
+  hide: boolean
+  reset: boolean
+  top: boolean
+  adjust: number | null
+  showing: boolean
+  hash: string
+  completed: Function
+  setShowing: Function
 }
 
 const IntroSection: React.FC<IntroSectionProps> = ({
   viewHeight,
   show,
+  hide,
+  reset,
   top,
+  adjust,
+  showing,
   completed,
   hash,
-  toggleShowing,
+  setShowing,
 }: IntroSectionProps) => {
   const peteNelson = useRef<SVGSVGElement | null>(null)
   const cloud1 = useRef<SVGSVGElement | null>(null)
@@ -48,8 +56,12 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   const [firstLoad, setFirstLoad] = useState(true)
 
   useEffect(() => {
-    reset()
-  },[])
+    resetFunc()
+  }, [])
+
+  useEffect(() => {
+    resetFunc()
+  }, [reset])
 
   useEffect(() => {
     if (show && (!visible || firstLoad)) {
@@ -60,7 +72,19 @@ const IntroSection: React.FC<IntroSectionProps> = ({
     }
   }, [show])
 
-  const reset = () => {
+  useEffect(() => {
+    if (hide) {
+      hideAnimated()
+    }
+  }, [hide])
+
+  useEffect(() => {
+    if (adjust) {
+      adjustAnimated(adjust)
+    }
+  })
+
+  const resetFunc = () => {
     const isVisible = visible && !firstLoad
     if (introCard.current) introCard.current.style.transform = `translateX(${isVisible ? 0 : introCardOffScreen()}px)`;
     if (skyLine1.current) skyLine1.current.style.transform = `translateY(${isVisible ? 0 : skyLine1OffScreen()}px)`;
@@ -181,7 +205,7 @@ const IntroSection: React.FC<IntroSectionProps> = ({
 
   const showAnimated = (offset: number) => {
     setVisible(true)
-    toggleShowing(true)
+    setShowing(true)
     if (section.current) section.current.style.display = 'block';
 
     return new Promise((resolve) => {
@@ -255,11 +279,21 @@ const IntroSection: React.FC<IntroSectionProps> = ({
       })
         .finished
         .then(() => {
-          toggleShowing(false)
+          setShowing(false)
           resolve();
         });
     });
   };
+
+  const adjustAnimated = (offset: number) => {
+    if (showing || !visible) return;
+
+    if (cloud1.current) cloud1.current.style.transform = `translateY(${cloud1Movement(offset)}px)`;
+    if (cloud2.current) cloud2.current.style.transform = `translateY(${cloud2Movement(offset)}px)`;
+    if (skyLine1.current) skyLine1.current.style.transform = `translateY(${skyLine1Movement(offset)}px)`;
+    if (skyLine2.current) skyLine2.current.style.transform = `translateY(${skyLine2Movement(offset)}px)`;
+    if (skyLine3.current) skyLine3.current.style.transform = `translateY(${skyLine3Movement(offset)}px)`;
+  }
 
   const animatePeteNelson = () => {
     if (introCard.current) introCard.current.style.transform = 'translateX(0px)';
