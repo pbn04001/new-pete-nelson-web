@@ -11,7 +11,7 @@ import {isProd} from "./utils/envs";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-const files = require.context('assets/icons', true, /.*\.svg$/);
+const files = require.context('assets/icons', true, /.svg$/);
 files.keys().forEach(files);
 
 const url = isProd() ?
