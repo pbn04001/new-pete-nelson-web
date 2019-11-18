@@ -86,7 +86,6 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   }, [adjust])
 
   const resetFunc = () => {
-    console.log('Reset intro')
     const isVisible = visible.current && !firstLoad
     if (introCard.current) introCard.current.style.transform = `translateX(${isVisible ? 0 : introCardOffScreen()}px)`;
     if (skyLine1.current) skyLine1.current.style.transform = `translateY(${isVisible ? 0 : skyLine1OffScreen()}px)`;
@@ -207,7 +206,6 @@ const IntroSection: React.FC<IntroSectionProps> = ({
 
   const showAnimated = (offset: number) => {
     visible.current = true
-    setShowing(true)
     if (section.current) section.current.style.display = 'block';
 
     if (firstLoad) {

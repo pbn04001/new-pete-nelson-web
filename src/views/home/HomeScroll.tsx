@@ -36,6 +36,7 @@ const totalSectionsSize = sectionSizes.reduce((acc, cur) => acc + cur.size, 0)
 const HomeScroll: React.FC = () => {
   const [lockSection] = useState(null);
   const currentSection = useRef(lockSection || 0);
+  const lastSection = useRef<number>(0)
   const [hideSection, setHideSection] = useState<number | null>(null)
   const [reset, setReset] = useState<number | null>(null)
   const [adjust, setAdjust] = useState<number>(0)
@@ -131,13 +132,15 @@ const HomeScroll: React.FC = () => {
     }
     if (!getIsMobile()) {
       const position = calculatePosition();
-      if (currentSection.current !== position.section &&
+      if (lockSection === null &&
+        currentSection.current !== position.section &&
         position.section < sectionSizes.length &&
         position.section >= 0) {
-        const lastSection = currentSection.current;
-        currentSection.current = position.section
-        performAnimations(lastSection, position);
+          lastSection.current = currentSection.current;
+          currentSection.current = position.section;
+          performAnimations(position);
       }
+      setAdjust(position.offset)
     }
   }
 
@@ -150,25 +153,23 @@ const HomeScroll: React.FC = () => {
     }
   }
 
-  const performAnimations = (lastSection: number, position: {section:number, offset:number}) => {
-    if (lockSection === null && lastSection !== position.section) {
-      setSwapping(window.pageYOffset)
-      setHash();
-      setHideSection(lastSection)
-      const timeout = lastSection === 0 ? 400 : 0;
-      setTimeout(() => {
-        updateBackground(sectionSizes[lastSection].bodyClass, false);
-        updateBackground(sectionSizes[position.section].bodyClass, true);
-      }, timeout);
-      setTimeout(() => {
-        if (currentSection.current === position.section) {
-          if (position.section > lastSection) {
-            currentSection.current = position.section
-          }
+  const performAnimations = (position: {section:number, offset:number}) => {
+    setShowing(true)
+    setSwapping(window.pageYOffset)
+    setHash();
+    setHideSection(lastSection.current)
+    const timeout = lastSection.current === 0 ? 400 : 0;
+    setTimeout(() => {
+      updateBackground(sectionSizes[lastSection.current].bodyClass, false);
+      updateBackground(sectionSizes[position.section].bodyClass, true);
+    }, timeout);
+    setTimeout(() => {
+      if (currentSection.current === position.section) {
+        if (position.section > lastSection.current) {
+          currentSection.current = position.section
         }
-      }, 500);
-    }
-    setAdjust(position.offset)
+      }
+    }, 500);
   }
 
   const loadAnimations = () => {
@@ -196,7 +197,7 @@ const HomeScroll: React.FC = () => {
         show={currentSection.current === 0}
         hide={(hideSection !== null && hideSection === 0) || false}
         reset={reset !== null && reset !== 1}
-        top={currentSection.current > 0}
+        top={lastSection.current === 0}
         adjust={currentSection.current === 0 && adjust || null}
         showing={showing}
         completed={sectionCompleted}
@@ -208,7 +209,7 @@ const HomeScroll: React.FC = () => {
         show={currentSection.current === 1}
         hide={(hideSection !== null && hideSection === 1) || false}
         reset={reset !== null && reset !== 1}
-        top={currentSection.current > 1}
+        top={lastSection.current < 1}
         adjust={currentSection.current === 1 && adjust || null}
         showing={showing}
         hash="mountain"
