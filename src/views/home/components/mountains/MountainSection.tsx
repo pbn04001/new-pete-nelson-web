@@ -48,7 +48,6 @@ type MountainSectionProps = {
   top: boolean
   hash: string
   completed: (hash: string) => void
-  setShowing: (showing: boolean) => void
 }
 
 const MountainSection: React.FC<MountainSectionProps> = ({
@@ -61,7 +60,6 @@ const MountainSection: React.FC<MountainSectionProps> = ({
    showing,
    completed,
    hash,
-   setShowing,
  }: MountainSectionProps) => {
   const clouds = useRef<SVGSVGElement | null>(null)
   const mountains1 = useRef<SVGSVGElement | null>(null)
@@ -85,6 +83,7 @@ const MountainSection: React.FC<MountainSectionProps> = ({
 
   useEffect(() => {
     if (show) {
+      console.log('Show')
       if (!visible.current || firstLoad) {
         showAnimated(top ? 0 : 1)
       } else {
@@ -193,7 +192,6 @@ const MountainSection: React.FC<MountainSectionProps> = ({
       duration: 300,
     }, 200, {visible, section: section.current}, true)
       .then(() => {
-        setShowing(false)
         completed(hash)
       });
   };

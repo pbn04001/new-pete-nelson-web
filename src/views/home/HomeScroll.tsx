@@ -36,15 +36,21 @@ const totalSectionsSize = sectionSizes.reduce((acc, cur) => acc + cur.size, 0)
 const HomeScroll: React.FC = () => {
   const [lockSection] = useState(null);
   const currentSection = useRef(lockSection || 0);
+  const [currentSectionState, setCurrentSection] = useState(lockSection || 0)
   const lastSection = useRef<number>(0)
   const [hideSection, setHideSection] = useState<number | null>(null)
   const [reset, setReset] = useState<number | null>(null)
   const [adjust, setAdjust] = useState<number>(0)
-  const [showing, setShowing] = useState(true);
+  const showing = useRef(true);
   const [hasLoadedAnimations, setLoadedAnimations] = useState(false);
   const swapping = useRef<number | null>(null)
 
   const pageScroll = useRef<HTMLDivElement | null>(null)
+
+  const updateCurrentSection = (section: number) => {
+    currentSection.current = section
+    setCurrentSection(section)
+  }
 
   useEffect(() => {
     if (!getIsMobile()) {
@@ -66,6 +72,7 @@ const HomeScroll: React.FC = () => {
 
   const sectionCompleted = (hash: string) => {
     swapping.current = null
+    showing.current = false
   }
 
   const stopInitialScroll = () => {
@@ -132,10 +139,9 @@ const HomeScroll: React.FC = () => {
     }
     if (!getIsMobile()) {
       const position = calculatePosition();
-      if (lockSection === null &&
-        currentSection.current !== position.section &&
-        position.section < sectionSizes.length &&
-        position.section >= 0) {
+      if (!showing.current &&
+        lockSection === null &&
+        currentSection.current !== position.section) {
           lastSection.current = currentSection.current;
           performAnimations(position);
       }
@@ -153,6 +159,7 @@ const HomeScroll: React.FC = () => {
   }
 
   const performAnimations = (position: {section:number, offset:number}) => {
+    showing.current = true
     swapping.current = window.pageYOffset;
     setHash();
     setHideSection(lastSection.current)
@@ -162,13 +169,8 @@ const HomeScroll: React.FC = () => {
       updateBackground(sectionSizes[position.section].bodyClass, true);
     }, timeout);
     setTimeout(() => {
-      currentSection.current = position.section;
-      setShowing(true)
-      // if (currentSection.current === position.section) {
-      //   if (position.section > lastSection.current) {
-      //     currentSection.current = position.section
-      //   }
-      // }
+      console.log('About to set current section',  position.section)
+      updateCurrentSection(position.section)
     }, 500);
   }
 
@@ -194,27 +196,25 @@ const HomeScroll: React.FC = () => {
     <div className="one-page-scroll" ref={pageScroll}>
       <IntroSection
         viewHeight={getViewHeight()}
-        show={currentSection.current === 0}
+        show={currentSectionState === 0}
         hide={(hideSection !== null && hideSection === 0) || false}
         reset={reset !== null && reset !== 1}
         top={lastSection.current === 0}
-        adjust={currentSection.current === 0 && adjust || null}
-        showing={showing}
+        adjust={currentSectionState === 0 && adjust || null}
+        showing={showing.current}
         completed={sectionCompleted}
-        setShowing={setShowing}
         hash="intro"
       />
       <MountainSection
         viewHeight={getViewHeight()}
-        show={currentSection.current === 1}
+        show={currentSectionState === 1}
         hide={(hideSection !== null && hideSection === 1) || false}
         reset={reset !== null && reset !== 1}
         top={lastSection.current < 1}
-        adjust={currentSection.current === 1 && adjust || null}
-        showing={showing}
+        adjust={currentSectionState === 1 && adjust || null}
+        showing={showing.current}
         hash="mountain"
         completed={sectionCompleted}
-        setShowing={setShowing}
       />
       <div className="scroll-down">
         <span className="scroll-down__txt">

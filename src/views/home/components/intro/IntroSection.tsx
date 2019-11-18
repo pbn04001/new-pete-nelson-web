@@ -25,7 +25,6 @@ type IntroSectionProps = {
   showing: boolean
   hash: string
   completed: (hash: string) => void
-  setShowing: (showing: boolean) => void
 }
 
 const IntroSection: React.FC<IntroSectionProps> = ({
@@ -38,7 +37,6 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   showing,
   completed,
   hash,
-  setShowing,
 }: IntroSectionProps) => {
   const peteNelson = useRef<SVGSVGElement | null>(null)
   const cloud1 = useRef<SVGSVGElement | null>(null)
@@ -277,7 +275,6 @@ const IntroSection: React.FC<IntroSectionProps> = ({
     })
       .finished
       .then(() => {
-        setShowing(false)
         completed(hash)
       });
   };
