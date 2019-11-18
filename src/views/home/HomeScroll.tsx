@@ -35,7 +35,7 @@ const totalSectionsSize = sectionSizes.reduce((acc, cur) => acc + cur.size, 0)
 
 const HomeScroll: React.FC = () => {
   const [lockSection] = useState(null);
-  const [currentSection, setCurrentSection] = useState(lockSection || 0);
+  const currentSection = useRef(lockSection || 0);
   const [hideSection, setHideSection] = useState<number | null>(null)
   const [reset, setReset] = useState<number | null>(null)
   const [adjust, setAdjust] = useState<number>(0)
@@ -51,7 +51,7 @@ const HomeScroll: React.FC = () => {
     }
     window.addEventListener('resize', onResize);
 
-    updateBackground(sectionSizes[currentSection].bodyClass, true);
+    updateBackground(sectionSizes[currentSection.current].bodyClass, true);
 
     if (!getIsMobile()) {
       loadAnimations();
@@ -74,7 +74,7 @@ const HomeScroll: React.FC = () => {
   }
 
   const resetNoVisibleSections = () => {
-    setReset(currentSection)
+    setReset(currentSection.current)
     setTimeout(() => {
       setReset(null)
     }, 1)
@@ -104,7 +104,7 @@ const HomeScroll: React.FC = () => {
 
   const setHash = () => {
     //this.currentHomeSectionPropagation = true;
-    window.location.hash = sectionSizes[currentSection].hash;
+    window.location.hash = sectionSizes[currentSection.current].hash;
   }
 
   const calculatePosition = ():{section:number, offset:number} => {
@@ -119,7 +119,6 @@ const HomeScroll: React.FC = () => {
       offset -= size;
       return false;
     });
-    setCurrentSection(section)
     return {
       section: section,
       offset: (offset % 1),
@@ -131,9 +130,14 @@ const HomeScroll: React.FC = () => {
       window.scrollTo(0, swapping);
     }
     if (!getIsMobile()) {
-      const lastSection = currentSection;
       const position = calculatePosition();
-      performAnimations(lastSection, position);
+      if (currentSection.current !== position.section &&
+        position.section < sectionSizes.length &&
+        position.section >= 0) {
+        const lastSection = currentSection.current;
+        currentSection.current = position.section
+        performAnimations(lastSection, position);
+      }
     }
   }
 
@@ -147,7 +151,7 @@ const HomeScroll: React.FC = () => {
   }
 
   const performAnimations = (lastSection: number, position: {section:number, offset:number}) => {
-    if (!lockSection && lastSection !== position.section) {
+    if (lockSection === null && lastSection !== position.section) {
       setSwapping(window.pageYOffset)
       setHash();
       setHideSection(lastSection)
@@ -157,14 +161,12 @@ const HomeScroll: React.FC = () => {
         updateBackground(sectionSizes[position.section].bodyClass, true);
       }, timeout);
       setTimeout(() => {
-        if (currentSection === position.section) {
+        if (currentSection.current === position.section) {
           if (position.section > lastSection) {
-            setCurrentSection(position.section)
+            currentSection.current = position.section
           }
-          // this.sections[position.section].show(position.section > lastSection)
-          //   .then(() => { this.swapping = null; });
         }
-      }, 300);
+      }, 500);
     }
     setAdjust(position.offset)
   }
@@ -191,11 +193,11 @@ const HomeScroll: React.FC = () => {
     <div className="one-page-scroll" ref={pageScroll}>
       <IntroSection
         viewHeight={getViewHeight()}
-        show={currentSection === 0}
-        hide={(hideSection && hideSection === 0) || false}
+        show={currentSection.current === 0}
+        hide={(hideSection !== null && hideSection === 0) || false}
         reset={reset !== null && reset !== 1}
-        top={currentSection > 0}
-        adjust={currentSection === 0 && adjust || null}
+        top={currentSection.current > 0}
+        adjust={currentSection.current === 0 && adjust || null}
         showing={showing}
         completed={sectionCompleted}
         setShowing={setShowing}
@@ -203,11 +205,11 @@ const HomeScroll: React.FC = () => {
       />
       <MountainSection
         viewHeight={getViewHeight()}
-        show={currentSection === 1}
-        hide={(hideSection && hideSection === 1) || false}
+        show={currentSection.current === 1}
+        hide={(hideSection !== null && hideSection === 1) || false}
         reset={reset !== null && reset !== 1}
-        top={currentSection > 1}
-        adjust={currentSection === 1 && adjust || null}
+        top={currentSection.current > 1}
+        adjust={currentSection.current === 1 && adjust || null}
         showing={showing}
         hash="mountain"
         completed={sectionCompleted}

@@ -24,8 +24,8 @@ type IntroSectionProps = {
   adjust: number | null
   showing: boolean
   hash: string
-  completed: Function
-  setShowing: Function
+  completed: (hash: string) => void
+  setShowing: (showing: boolean) => void
 }
 
 const IntroSection: React.FC<IntroSectionProps> = ({
@@ -52,7 +52,7 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   const introCard = useRef<HTMLDivElement>(null)
   const section = useRef<HTMLDivElement>(null)
 
-  const [visible, setVisible] = useState(show);
+  const visible = useRef(show);
   const [firstLoad, setFirstLoad] = useState(true)
 
   useEffect(() => {
@@ -60,13 +60,14 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   }, [])
 
   useEffect(() => {
-    resetFunc()
+    if (reset) {
+      resetFunc()
+    }
   }, [reset])
 
   useEffect(() => {
-    if (show && (!visible || firstLoad)) {
+    if (show && (!visible.current || firstLoad)) {
       showAnimated(top ? 0 : 1)
-        .then(() => { completed(hash) });
     } else {
       completed(hash)
     }
@@ -82,10 +83,11 @@ const IntroSection: React.FC<IntroSectionProps> = ({
     if (adjust) {
       adjustAnimated(adjust)
     }
-  })
+  }, [adjust])
 
   const resetFunc = () => {
-    const isVisible = visible && !firstLoad
+    console.log('Reset intro')
+    const isVisible = visible.current && !firstLoad
     if (introCard.current) introCard.current.style.transform = `translateX(${isVisible ? 0 : introCardOffScreen()}px)`;
     if (skyLine1.current) skyLine1.current.style.transform = `translateY(${isVisible ? 0 : skyLine1OffScreen()}px)`;
     if (skyLine2.current) skyLine2.current.style.transform = `translateY(${isVisible ? 0 : skyLine2OffScreen()}px)`;
@@ -145,7 +147,7 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   };
 
   const hideAnimated = () => {
-    setVisible(false)
+    visible.current = false
     if (moonBack.current) {
       moonBack.current.classList.remove('intro__moon_back--show')
       moonBack.current.classList.add('intro__moon_back--hide')
@@ -204,89 +206,84 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   }
 
   const showAnimated = (offset: number) => {
-    setVisible(true)
+    visible.current = true
     setShowing(true)
     if (section.current) section.current.style.display = 'block';
 
-    return new Promise((resolve) => {
-      if (firstLoad) {
-        setFirstLoad(false)
-        animatePeteNelson();
-        setTimeout(() => {
-          showRemainingAnimated(offset)
-            .then(resolve);
-        }, 700);
-      } else {
-        if (introCardSub.current) introCardSub.current.classList.add('intro__card_sub--show');
-        anime({
-          targets: introCard.current,
-          translateX: 0,
-          easing: 'easeOutSine',
-          duration: 400,
-        });
+    if (firstLoad) {
+      setFirstLoad(false)
+      animatePeteNelson();
+      setTimeout(() => {
         showRemainingAnimated(offset)
-          .then(resolve);
-      }
-    });
+      }, 700);
+    } else {
+      if (introCardSub.current) introCardSub.current.classList.add('intro__card_sub--show');
+      anime({
+        targets: introCard.current,
+        translateX: 0,
+        easing: 'easeOutSine',
+        duration: 400,
+      });
+      showRemainingAnimated(offset)
+    }
   };
 
   const showRemainingAnimated = (offset: number) => {
-    return new Promise((resolve) => {
-      if (moonBack.current) moonBack.current.classList.remove('intro__moon_back--hide');
-      delayActionCheckVisible(() => {
-        if (moonBack.current) moonBack.current.classList.add('intro__moon_back--show');
-      }, 300, { visible, section: section.current }, true);
 
-      anime({
-        targets: moon.current,
-        translateY: 0,
-        easing: 'easeOutSine',
-        duration: 300,
-      });
-      anime({
-        targets: cloud1.current,
-        translateY: cloud1Movement(offset),
-        opacity: 0.6,
-        easing: 'easeOutSine',
-        duration: 1000,
-      });
-      anime({
-        targets: cloud2.current,
-        translateY: cloud2Movement(offset),
-        opacity: 0.6,
-        easing: 'easeOutSine',
-        duration: 1000,
-      });
-      anime({
-        targets: skyLine3.current,
-        translateY: skyLine3Movement(offset),
-        easing: 'easeOutBack',
-        duration: 500,
-      });
-      anime({
-        targets: skyLine2.current,
-        translateY: skyLine2Movement(offset),
-        easing: 'easeOutBack',
-        duration: 500,
-        delay: 100,
-      });
-      anime({
-        targets: skyLine1.current,
-        translateY: skyLine1Movement(offset),
-        easing: 'easeOutBack',
-        duration: 500,
-        delay: 100,
-      })
-        .finished
-        .then(() => {
-          setShowing(false)
-          resolve();
-        });
+    if (moonBack.current) moonBack.current.classList.remove('intro__moon_back--hide');
+    delayActionCheckVisible(() => {
+      if (moonBack.current) moonBack.current.classList.add('intro__moon_back--show');
+    }, 300, { visible, section: section.current }, true);
+
+    anime({
+      targets: moon.current,
+      translateY: 0,
+      easing: 'easeOutSine',
+      duration: 300,
     });
+    anime({
+      targets: cloud1.current,
+      translateY: cloud1Movement(offset),
+      opacity: 0.6,
+      easing: 'easeOutSine',
+      duration: 1000,
+    });
+    anime({
+      targets: cloud2.current,
+      translateY: cloud2Movement(offset),
+      opacity: 0.6,
+      easing: 'easeOutSine',
+      duration: 1000,
+    });
+    anime({
+      targets: skyLine3.current,
+      translateY: skyLine3Movement(offset),
+      easing: 'easeOutBack',
+      duration: 500,
+    });
+    anime({
+      targets: skyLine2.current,
+      translateY: skyLine2Movement(offset),
+      easing: 'easeOutBack',
+      duration: 500,
+      delay: 100,
+    });
+    anime({
+      targets: skyLine1.current,
+      translateY: skyLine1Movement(offset),
+      easing: 'easeOutBack',
+      duration: 500,
+      delay: 100,
+    })
+      .finished
+      .then(() => {
+        setShowing(false)
+        completed(hash)
+      });
   };
 
   const adjustAnimated = (offset: number) => {
-    if (showing || !visible) return;
+    if (showing || !visible.current) return;
 
     if (cloud1.current) cloud1.current.style.transform = `translateY(${cloud1Movement(offset)}px)`;
     if (cloud2.current) cloud2.current.style.transform = `translateY(${cloud2Movement(offset)}px)`;

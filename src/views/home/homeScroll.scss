@@ -84,6 +84,8 @@
       fill: $white;
       transform: rotate(-90deg);
       animation: scroll-down-arrow 1s ease-in-out infinite;
+      width: 10px;
+      height: 10px;
     }
 
     &__txt {

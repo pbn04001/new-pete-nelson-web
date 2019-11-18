@@ -1,7 +1,8 @@
+import { MutableRefObject } from 'react';
 import anime from 'animejs';
 
 type AnimationComponent = {
-  visible: Boolean,
+  visible: MutableRefObject<boolean>,
   section?: HTMLDivElement | null,
 }
 
@@ -13,7 +14,7 @@ export function delayAnimationCheckVisible(
 {
   return new Promise((resolve) => {
     setTimeout(() => {
-      if (component.visible === visible) {
+      if (component.visible.current === visible) {
         anime(animation)
           .finished
           .then(() => {
@@ -28,7 +29,7 @@ export function delayAnimationCheckVisible(
 
 export function hideSectionAfterAnimation(delay: number, component: AnimationComponent) {
   setTimeout(() => {
-    if (!component.visible && component.section) {
+    if (!component.visible.current && component.section) {
       component.section.style.display = 'none';
     }
   }, delay);
@@ -37,7 +38,7 @@ export function hideSectionAfterAnimation(delay: number, component: AnimationCom
 export function delayActionCheckVisible(action: Function, delay: number, component: AnimationComponent, visible: boolean) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      if (component.visible === visible) {
+      if (component.visible.current === visible) {
         action();
         resolve(true);
       } else {
