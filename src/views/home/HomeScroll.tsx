@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {Component, createRef} from 'react';
 import debounce from 'debounce';
 
 import { SCREEN_SIZE, getScreenSizeMax } from 'utils/sizes';
@@ -33,89 +33,114 @@ const lockSection:number | null = null;
 
 const totalSectionsSize = sectionSizes.reduce((acc, cur) => acc + cur.size, 0)
 
-const HomeScroll: React.FC = () => {
-  const [lockSection] = useState(null);
-  const currentSection = useRef(lockSection || 0);
-  const [currentSectionState, setCurrentSection] = useState(lockSection || 0)
-  const lastSection = useRef<number>(0)
-  const [hideSection, setHideSection] = useState<number | null>(null)
-  const [reset, setReset] = useState<number | null>(null)
-  const [adjust, setAdjust] = useState<number>(0)
-  const showing = useRef(true);
-  const [hasLoadedAnimations, setLoadedAnimations] = useState(false);
-  const swapping = useRef<number | null>(null)
+interface HomeState {
+  currentSection: number
+  lastSection: number
+  hide: number | null
+  reset: number | null
+  adjust: number,
+  hasLoadedAnimations: boolean
+  swapping: number | null
+}
 
-  const pageScroll = useRef<HTMLDivElement | null>(null)
+interface  HomeProps {}
 
-  const updateCurrentSection = (section: number) => {
-    currentSection.current = section
-    setCurrentSection(section)
+class HomeScroll extends Component<HomeProps,HomeState> {
+
+  private pageScroll = createRef<HTMLDivElement>()
+
+  constructor(props: HomeProps) {
+    super(props);
+
+    this.state = {
+      currentSection: lockSection != null && lockSection >= 0 ? lockSection : 0,
+      lastSection: 0,
+      hide: null,
+      reset: null,
+      adjust: 0,
+      hasLoadedAnimations: false,
+      swapping: null
+    };
   }
 
-  useEffect(() => {
-    if (!getIsMobile()) {
-      stopInitialScroll();
+  componentDidMount(): void {
+    const { currentSection } = this.state
+    const isMobile = getIsMobile()
+    if (!isMobile)  {
+      this.stopInitialScroll();
     }
-    window.addEventListener('resize', onResize);
+    window.addEventListener('resize', this.onResize);
 
-    updateBackground(sectionSizes[currentSection.current].bodyClass, true);
+    this.updateBackground(sectionSizes[currentSection].bodyClass, true);
 
-    if (!getIsMobile()) {
-      loadAnimations();
+    if (!isMobile) {
+      this.loadAnimations();
     } else {
       //TODO show everything for mobile
       // this.sections.forEach((section, index) => {
       //   this.sections[index].showAssets();
       // });
     }
-  }, [])
-
-  const sectionCompleted = (hash: string) => {
-    swapping.current = null
-    showing.current = false
   }
 
-  const stopInitialScroll = () => {
+  sectionCompleted = (hash: string) => {
+    this.setState({
+      swapping: null,
+    })
+  };
+
+  stopInitialScroll = () => {
     // Preventing scrolling until first animating is complete
     window.scrollTo(0, 0);
     document.body.style.overflow = 'hidden';
-  }
+  };
 
-  const resetNoVisibleSections = () => {
-    setReset(currentSection.current)
+  resetNoVisibleSections = () => {
+    this.setState((state) => ({
+      reset: state.currentSection,
+    }));
     setTimeout(() => {
-      setReset(null)
+      this.setState({
+        reset: null,
+      })
     }, 1)
-  }
+  };
 
-  const onResize = () => {
+  onResize = () => {
+    const { hasLoadedAnimations } = this.state;
     const isMobile = getIsMobile();
     if (!isMobile) {
       if (!hasLoadedAnimations) {
-        loadAnimations();
+        this.loadAnimations();
       } else {
-        calculatePageSize();
-        debounce(resetNoVisibleSections, 200);
+        this.calculatePageSize();
+        debounce(this.resetNoVisibleSections, 200);
       }
-    } else if (!getIsMobile()) { // Only run once when first viewing mobile
-      if (pageScroll.current) pageScroll.current.style.height = 'auto';
-      setReset(-1)
+    } else if (!isMobile) { // Only run once when first viewing mobile
+      if (this.pageScroll.current) this.pageScroll.current.style.height = 'auto';
+      this.setState({
+        reset: -1
+      })
       setTimeout(() => {
-        setReset(null)
+        this.setState({
+          reset: null
+        })
       },1)
     }
   }
 
-  const calculatePageSize = () => {
-    if (pageScroll.current) pageScroll.current.style.height = `${(totalSectionsSize * getViewHeight()) + getViewHeight()}px`;
+  calculatePageSize = () => {
+    if (this.pageScroll.current) this.pageScroll.current.style.height = `${(totalSectionsSize * getViewHeight()) + getViewHeight()}px`;
   }
 
-  const setHash = () => {
+  setHash = () => {
+    const { currentSection } = this.state;
     //this.currentHomeSectionPropagation = true;
-    window.location.hash = sectionSizes[currentSection.current].hash;
+    window.location.hash = sectionSizes[currentSection].hash;
   }
 
-  const calculatePosition = ():{section:number, offset:number} => {
+  calculatePosition = ():{section:number, offset:number} => {
+    const { currentSection } = this.state;
     let offset = window.pageYOffset / (getViewHeight() + 1);
     const section = sectionSizes.findIndex((section) => {
       const { size } = section;
@@ -128,59 +153,66 @@ const HomeScroll: React.FC = () => {
       return false;
     });
     return {
-      section: section >= 0 ? section : currentSection.current,
+      section: section >= 0 ? section : currentSection,
       offset: (offset % 1),
     };
   }
 
-  const onScroll = () => {
-    if (swapping.current) {
-      window.scrollTo(0, swapping.current);
+  onScroll = () => {
+    const { currentSection, swapping } = this.state;
+    if (swapping != null) {
+      window.scrollTo(0, swapping);
+      return
     }
     if (!getIsMobile()) {
-      const position = calculatePosition();
-      if (!showing.current &&
-        lockSection === null &&
-        currentSection.current !== position.section) {
-          lastSection.current = currentSection.current;
-          performAnimations(position);
+      const position = this.calculatePosition();
+      if (lockSection === null &&
+        currentSection !== position.section) {
+          this.performAnimations(currentSection, position);
       }
-      setAdjust(position.offset)
+      this.setState({
+        adjust: position.offset,
+      })
     }
   }
 
-  const updateBackground = (sectionClass:string, add:boolean) => {
-    if (!pageScroll.current) return
+  updateBackground = (sectionClass:string, add:boolean) => {
+    if (!this.pageScroll.current) return
     if (add) {
-      pageScroll.current.classList.add(`one-page-scroll--${sectionClass}`);
+      this.pageScroll.current.classList.add(`one-page-scroll--${sectionClass}`);
     } else {
-      pageScroll.current.classList.remove(`one-page-scroll--${sectionClass}`);
+      this.pageScroll.current.classList.remove(`one-page-scroll--${sectionClass}`);
     }
   }
 
-  const performAnimations = (position: {section:number, offset:number}) => {
-    showing.current = true
-    swapping.current = window.pageYOffset;
-    setHash();
-    setHideSection(lastSection.current)
-    const timeout = lastSection.current === 0 ? 400 : 0;
+  performAnimations = (lastSection:number, position: {section:number, offset:number}) => {
+    this.setState({
+      lastSection,
+      swapping: window.pageYOffset,
+      hide: lastSection,
+    })
+    this.setHash();
+    const timeout = lastSection === 0 ? 400 : 0;
     setTimeout(() => {
-      updateBackground(sectionSizes[lastSection.current].bodyClass, false);
-      updateBackground(sectionSizes[position.section].bodyClass, true);
+      this.updateBackground(sectionSizes[lastSection].bodyClass, false);
+      this.updateBackground(sectionSizes[position.section].bodyClass, true);
     }, timeout);
     setTimeout(() => {
-      console.log('About to set current section',  position.section)
-      updateCurrentSection(position.section)
+      this.setState({
+        currentSection: position.section
+      })
     }, 500);
   }
 
-  const loadAnimations = () => {
-    setLoadedAnimations(true)
-    stopInitialScroll();
-    calculatePageSize();
-    setHash();
+  loadAnimations = () => {
+    this.setState({
+      hasLoadedAnimations: true,
+    })
+    this.stopInitialScroll();
+    this.calculatePageSize();
+    this.setHash();
     document.body.style.overflow = 'visible';
-    window.addEventListener('scroll', onScroll);
+    window.addEventListener('scroll', this.onScroll);
     // this.sections[this.currentSection].load()
     //   .then(() => {
     //     if (this.currentSection > 0) {
@@ -192,43 +224,46 @@ const HomeScroll: React.FC = () => {
     //   });
   }
 
-  return (
-    <div className="one-page-scroll" ref={pageScroll}>
-      <IntroSection
-        viewHeight={getViewHeight()}
-        show={currentSectionState === 0}
-        hide={(hideSection !== null && hideSection === 0) || false}
-        reset={reset !== null && reset !== 1}
-        top={lastSection.current === 0}
-        adjust={currentSectionState === 0 && adjust || null}
-        showing={showing.current}
-        completed={sectionCompleted}
-        hash="intro"
-      />
-      <MountainSection
-        viewHeight={getViewHeight()}
-        show={currentSectionState === 1}
-        hide={(hideSection !== null && hideSection === 1) || false}
-        reset={reset !== null && reset !== 1}
-        top={lastSection.current < 1}
-        adjust={currentSectionState === 1 && adjust || null}
-        showing={showing.current}
-        hash="mountain"
-        completed={sectionCompleted}
-      />
-      <div className="scroll-down">
-        <span className="scroll-down__txt">
-          <span>S</span>
-          <span>c</span>
-          <span>r</span>
-          <span>o</span>
-          <span>l</span>
-          <span>l</span>
-        </span>
-        <Svg name="arrow" className="scroll-down__arrow" />
+  render() {
+    const { currentSection, lastSection, hide, reset, swapping, adjust } = this.state;
+    return (
+      <div className="one-page-scroll" ref={this.pageScroll}>
+        <IntroSection
+          viewHeight={getViewHeight()}
+          show={currentSection === 0}
+          hide={(hide !== null && hide === 0) || false}
+          reset={reset !== null && reset !== 1}
+          top={lastSection === 0}
+          adjust={currentSection === 0 && adjust || null}
+          showing={swapping != null}
+          completed={this.sectionCompleted}
+          hash="intro"
+        />
+        <MountainSection
+          viewHeight={getViewHeight()}
+          show={currentSection === 1}
+          hide={(hide !== null && hide === 1) || false}
+          reset={reset !== null && reset !== 1}
+          top={lastSection < 1}
+          adjust={currentSection === 1 && adjust || null}
+          showing={swapping != null}
+          hash="mountain"
+          completed={this.sectionCompleted}
+        />
+        <div className="scroll-down">
+          <span className="scroll-down__txt">
+            <span>S</span>
+            <span>c</span>
+            <span>r</span>
+            <span>o</span>
+            <span>l</span>
+            <span>l</span>
+          </span>
+          <Svg name="arrow" className="scroll-down__arrow"/>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default HomeScroll;
