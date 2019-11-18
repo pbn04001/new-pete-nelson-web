@@ -121,7 +121,7 @@ const HomeScroll: React.FC = () => {
       return false;
     });
     return {
-      section: section,
+      section: section >= 0 ? section : currentSection.current,
       offset: (offset % 1),
     };
   }
@@ -137,7 +137,6 @@ const HomeScroll: React.FC = () => {
         position.section < sectionSizes.length &&
         position.section >= 0) {
           lastSection.current = currentSection.current;
-          currentSection.current = position.section;
           performAnimations(position);
       }
       setAdjust(position.offset)
@@ -154,7 +153,6 @@ const HomeScroll: React.FC = () => {
   }
 
   const performAnimations = (position: {section:number, offset:number}) => {
-    setShowing(true)
     swapping.current = window.pageYOffset;
     setHash();
     setHideSection(lastSection.current)
@@ -164,11 +162,13 @@ const HomeScroll: React.FC = () => {
       updateBackground(sectionSizes[position.section].bodyClass, true);
     }, timeout);
     setTimeout(() => {
-      if (currentSection.current === position.section) {
-        if (position.section > lastSection.current) {
-          currentSection.current = position.section
-        }
-      }
+      currentSection.current = position.section;
+      setShowing(true)
+      // if (currentSection.current === position.section) {
+      //   if (position.section > lastSection.current) {
+      //     currentSection.current = position.section
+      //   }
+      // }
     }, 500);
   }
 
