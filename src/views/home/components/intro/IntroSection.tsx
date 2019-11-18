@@ -66,10 +66,12 @@ const IntroSection: React.FC<IntroSectionProps> = ({
   }, [reset])
 
   useEffect(() => {
-    if (show && (!visible.current || firstLoad)) {
-      showAnimated(top ? 0 : 1)
-    } else {
-      completed(hash)
+    if (show) {
+      if (!visible.current || firstLoad) {
+        showAnimated(top ? 0 : 1)
+      } else {
+        completed(hash)
+      }
     }
   }, [show])
 

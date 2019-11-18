@@ -84,10 +84,12 @@ const MountainSection: React.FC<MountainSectionProps> = ({
   }, [reset])
 
   useEffect(() => {
-    if (show && (!visible.current || firstLoad)) {
-      showAnimated(top ? 0 : 1)
-    } else {
-      completed(hash)
+    if (show) {
+      if (!visible.current || firstLoad) {
+        showAnimated(top ? 0 : 1)
+      } else {
+        completed(hash)
+      }
     }
   }, [show])
 

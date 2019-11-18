@@ -127,7 +127,6 @@ const HomeScroll: React.FC = () => {
   }
 
   const onScroll = () => {
-    console.log(swapping.current)
     if (swapping.current) {
       window.scrollTo(0, swapping.current);
     }
