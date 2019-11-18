@@ -198,7 +198,6 @@ const MountainSection: React.FC<MountainSectionProps> = ({
 
   const adjustAnimated = (offset:number) => {
     if (showing || !visible.current) return;
-    console.log('adjust', showing, visible.current)
 
     if (card.current) card.current.style.transform = `translateY(${cardMovement(offset, card.current, viewHeight)}px)`;
     if (mountains2.current) mountains2.current.style.transform = `translateY(${mountains2Movement(offset, viewHeight)}px)`;

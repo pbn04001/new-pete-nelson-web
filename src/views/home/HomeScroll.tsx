@@ -42,7 +42,7 @@ const HomeScroll: React.FC = () => {
   const [adjust, setAdjust] = useState<number>(0)
   const [showing, setShowing] = useState(true);
   const [hasLoadedAnimations, setLoadedAnimations] = useState(false);
-  const [swapping, setSwapping] = useState<number | null>(null)
+  const swapping = useRef<number | null>(null)
 
   const pageScroll = useRef<HTMLDivElement | null>(null)
 
@@ -65,7 +65,7 @@ const HomeScroll: React.FC = () => {
   }, [])
 
   const sectionCompleted = (hash: string) => {
-    setSwapping(null)
+    swapping.current = null
   }
 
   const stopInitialScroll = () => {
@@ -127,8 +127,9 @@ const HomeScroll: React.FC = () => {
   }
 
   const onScroll = () => {
-    if (swapping) {
-      window.scrollTo(0, swapping);
+    console.log(swapping.current)
+    if (swapping.current) {
+      window.scrollTo(0, swapping.current);
     }
     if (!getIsMobile()) {
       const position = calculatePosition();
@@ -155,7 +156,7 @@ const HomeScroll: React.FC = () => {
 
   const performAnimations = (position: {section:number, offset:number}) => {
     setShowing(true)
-    setSwapping(window.pageYOffset)
+    swapping.current = window.pageYOffset;
     setHash();
     setHideSection(lastSection.current)
     const timeout = lastSection.current === 0 ? 400 : 0;
