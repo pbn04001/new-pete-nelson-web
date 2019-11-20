@@ -1,16 +1,12 @@
 import React, {Component, createRef} from 'react';
 import debounce from 'debounce';
 
-import { SCREEN_SIZE, getScreenSizeMax } from 'utils/sizes';
+import {SCREEN_SIZE, getScreenSizeMax, getViewHeight} from 'utils/sizes';
 
 import './homeScroll.scss'
 import IntroSection from "./components/intro/IntroSection";
 import Svg from "../../components/svg/Svg";
 import MountainSection from "./components/mountains/MountainSection";
-
-const getViewHeight = (): number => {
-  return window.innerHeight;
-};
 
 const getIsMobile = () => {
   return window.innerWidth < getScreenSizeMax(SCREEN_SIZE.SM);
@@ -237,7 +233,6 @@ class HomeScroll extends Component<HomeProps,HomeState> {
     return (
       <div className="one-page-scroll" ref={this.pageScroll}>
         <IntroSection
-          viewHeight={getViewHeight()}
           show={this.shouldShow(0)}
           hide={this.shouldHide(0)}
           reset={this.shouldReset(0)}
@@ -247,7 +242,6 @@ class HomeScroll extends Component<HomeProps,HomeState> {
           completed={this.sectionCompleted}
         />
         <MountainSection
-          viewHeight={getViewHeight()}
           show={this.shouldShow(1)}
           hide={this.shouldHide(1)}
           reset={this.shouldReset(1)}

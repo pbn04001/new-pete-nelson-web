@@ -34,3 +34,7 @@ export function getClientWidth(client?: HTMLDivElement | SVGSVGElement | null): 
   if (!client) return 0;
   return client.clientWidth || (client.parentNode as HTMLDivElement | HTMLSpanElement).clientWidth;
 }
+
+export const getViewHeight = (): number => {
+  return window.innerHeight;
+};

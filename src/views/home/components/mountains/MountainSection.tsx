@@ -1,17 +1,30 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {MutableRefObject, useEffect, useRef, useState} from 'react';
 import anime from 'animejs';
 
-import {delayActionCheckVisible, delayAnimationCheckVisible, hideSectionAfterAnimation} from "utils/animation";
-import {getClientHeight, getClientWidth} from "utils/sizes";
+import {
+  AnimationComponent,
+  delayActionCheckVisible,
+  delayAnimationCheckVisible,
+  hideSectionAfterAnimation
+} from "utils/animation";
+import {getClientHeight, getClientWidth, getViewHeight} from "utils/sizes";
 
 import MountainClouds from 'assets/components/MountainClouds'
 import Mountains1 from 'assets/components/Mountains1'
 import Mountains2 from 'assets/components/Mountains2'
 
 import './mountainSection.scss'
+import {translateY} from "../../../../utils/style";
 
-const cardMovement = (offset: number, card: HTMLDivElement | null, viewHeight: number) => {
-  return -1 * (offset * (getClientHeight(card) - viewHeight));
+const createAnimationComponent = (props: MountainSectionProps, refs: MountainSectionRefs): AnimationComponent => {
+  return {
+    visible: refs.visible,
+    section: refs.section,
+  }
+}
+
+const cardMovement = (offset: number, card: HTMLDivElement | null) => {
+  return -1 * (offset * (getClientHeight(card) - getViewHeight()));
 }
 
 const mountains1Offscreen = (mountains1: SVGSVGElement | null) => {
@@ -30,16 +43,126 @@ const cardOffScreen = (card: HTMLDivElement | null) => {
   return (getClientHeight(card) + 50);
 }
 
-const mountains1Movement = (offset: number, viewHeight: number) => {
-  return offset * (viewHeight / 30);
+const mountains1Movement = (offset: number) => {
+  return offset * (getViewHeight() / 30);
 }
 
-const mountains2Movement = (offset: number, viewHeight: number) => {
-  return offset * (viewHeight / 20);
+const mountains2Movement = (offset: number) => {
+  return offset * (getViewHeight() / 20);
+}
+
+const resetFunc = (props: MountainSectionProps, refs: MountainSectionRefs) => {
+  const isVisible = refs.visible.current && !refs.firstLoad;
+  if (refs.card) refs.card.style.opacity = isVisible ? '1' : '0';
+  translateY(refs.card, isVisible, cardOffScreen(refs.card));
+  translateY(refs.mountains1, isVisible, mountains1Offscreen(refs.mountains1));
+  translateY(refs.mountains2, isVisible, mountains2Offscreen(refs.mountains2));
+  translateY(refs.clouds, isVisible, cloudsOffscreen(refs.clouds));
+  if (refs.section) refs.section.style.display = isVisible ? 'block' : 'none';
+}
+
+const hideAnimated = (props: MountainSectionProps, refs: MountainSectionRefs) => {
+  refs.visible.current = false
+
+  anime({
+    targets: refs.card,
+    translateY: cardOffScreen(refs.card),
+    opacity: 0,
+    easing: 'easeOutSine',
+    duration: 700,
+  });
+
+  anime({
+    targets: refs.clouds,
+    translateY: cloudsOffscreen(refs.clouds),
+    easing: 'easeInOutSine',
+    duration: 700,
+    opacity: 0,
+  });
+
+  anime({
+    targets: refs.mountains2,
+    translateY: mountains2Offscreen(refs.mountains2),
+    easing: 'easeInOutSine',
+    duration: 500,
+  });
+
+  anime({
+    targets: refs.mountains1,
+    translateY: mountains1Offscreen(refs.mountains1),
+    easing: 'easeInOutSine',
+    duration: 300,
+  });
+
+  hideSectionAfterAnimation(700, createAnimationComponent(props, refs));
+}
+
+const showAnimated = (offset: number, props: MountainSectionProps, refs: MountainSectionRefs) => {
+  refs.visible.current = true
+  refs.setFirstLoad(false)
+  if (refs.section) refs.section.style.display = 'block';
+
+  anime({
+    targets: refs.card,
+    translateY: cardMovement(offset, refs.card),
+    easing: 'easeOutSine',
+    duration: 800,
+  });
+  delayAnimationCheckVisible({
+    targets: refs.card,
+    opacity: 1,
+    easing: 'easeOutSine',
+    duration: 500,
+  }, 300, createAnimationComponent(props, refs), true);
+
+  anime({
+    targets: refs.clouds,
+    translateY: 0,
+    easing: 'easeOutSine',
+    opacity: 1,
+    duration: 700,
+  });
+
+  delayAnimationCheckVisible({
+    targets: refs.mountains2,
+    translateY: mountains2Movement(offset),
+    easing: 'easeOutSine',
+    duration: 500,
+  }, 200, createAnimationComponent(props, refs), true);
+
+  delayAnimationCheckVisible({
+    targets: refs.mountains1,
+    translateY: mountains1Movement(offset),
+    easing: 'easeOutSine',
+    duration: 300,
+  }, 200, createAnimationComponent(props, refs), true)
+    .then(() => {
+      props.completed()
+    });
+};
+
+const adjustAnimated = (offset:number, props: MountainSectionProps, refs: MountainSectionRefs) => {
+  if (props.showing || !refs.visible.current) return;
+
+  translateY(refs.card, false, cardMovement(offset, refs.card))
+  translateY(refs.mountains2, false, mountains2Movement(offset))
+  translateY(refs.mountains1, false, mountains1Movement(offset))
+}
+
+
+type MountainSectionRefs = {
+  clouds: SVGSVGElement | null
+  mountains1: SVGSVGElement | null
+  mountains2: SVGSVGElement | null
+  cardSub: HTMLDivElement | null
+  card: HTMLDivElement | null
+  section: HTMLDivElement | null
+  visible: MutableRefObject<boolean>
+  firstLoad: boolean,
+  setFirstLoad: (value: boolean) => void
 }
 
 type MountainSectionProps = {
-  viewHeight: number
   show: boolean
   hide: boolean
   reset: boolean
@@ -49,40 +172,51 @@ type MountainSectionProps = {
   completed: () => void
 }
 
-const MountainSection: React.FC<MountainSectionProps> = ({
-   viewHeight,
-   show,
-   hide,
-   reset,
-   top,
-   adjust,
-   showing,
-   completed,
- }: MountainSectionProps) => {
-  const clouds = useRef<SVGSVGElement | null>(null)
-  const mountains1 = useRef<SVGSVGElement | null>(null)
-  const mountains2 = useRef<SVGSVGElement | null>(null)
+const MountainSection: React.FC<MountainSectionProps> = (props: MountainSectionProps) => {
+  const {
+    show,
+    hide,
+    reset,
+    top,
+    adjust,
+    completed,
+  } = props;
+
+  const clouds = useRef<SVGSVGElement>(null)
+  const mountains1 = useRef<SVGSVGElement>(null)
+  const mountains2 = useRef<SVGSVGElement>(null)
   const cardSub = useRef<HTMLDivElement>(null)
   const card = useRef<HTMLDivElement>(null)
   const section = useRef<HTMLDivElement>(null)
-
   const visible = useRef(show);
   const [firstLoad, setFirstLoad] = useState(true)
 
+  const getRefs = ():MountainSectionRefs => ({
+    clouds: clouds.current,
+    mountains1: mountains1.current,
+    mountains2: mountains2.current,
+    cardSub: cardSub.current,
+    card: card.current,
+    section: section.current,
+    visible,
+    firstLoad,
+    setFirstLoad,
+  });
+
   useEffect(() => {
-    resetFunc()
+    resetFunc(props, getRefs())
   }, [])
 
   useEffect(() => {
     if (reset) {
-      resetFunc()
+      resetFunc(props, getRefs())
     }
   }, [reset])
 
   useEffect(() => {
     if (show) {
       if (!visible.current || firstLoad) {
-        showAnimated(top ? 0 : 1)
+        showAnimated(top ? 0 : 1, props, getRefs())
       } else {
         completed()
       }
@@ -91,115 +225,15 @@ const MountainSection: React.FC<MountainSectionProps> = ({
 
   useEffect(() => {
     if (hide) {
-      hideAnimated()
+      hideAnimated(props, getRefs())
     }
   }, [hide])
 
   useEffect(() => {
     if (adjust) {
-      adjustAnimated(adjust)
+      adjustAnimated(adjust, props, getRefs())
     }
   }, [adjust])
-
-  const resetFunc = () => {
-    const isVisible = visible.current && !firstLoad
-    if (card.current) {
-      card.current.style.opacity = isVisible ? '1' : '0';
-      card.current.style.transform = `translateY(${isVisible ? 0 : cardOffScreen(card.current)}px)`;
-    }
-    if (mountains1.current) mountains1.current.style.transform = `translateY(${isVisible ? 0 : mountains1Offscreen(mountains1.current)}px)`;
-    if (mountains2.current) mountains2.current.style.transform = `translateY(${isVisible ? 0 : mountains2Offscreen(mountains2.current)}px)`;
-    if (clouds.current) clouds.current.style.transform = `translateY(${isVisible ? 0 : cloudsOffscreen(clouds.current)}px)`;
-    if (section.current) section.current.style.display = isVisible ? 'block' : 'none';
-  }
-
-  const hideAnimated = () => {
-    visible.current = false
-
-    anime({
-      targets: card.current,
-      translateY: cardOffScreen(card.current),
-      opacity: 0,
-      easing: 'easeOutSine',
-      duration: 700,
-    });
-
-    anime({
-      targets: clouds.current,
-      translateY: cloudsOffscreen(clouds.current),
-      easing: 'easeInOutSine',
-      duration: 700,
-      opacity: 0,
-    });
-
-    anime({
-      targets: mountains2.current,
-      translateY: mountains2Offscreen(mountains2.current),
-      easing: 'easeInOutSine',
-      duration: 500,
-    });
-
-    anime({
-      targets: mountains1.current,
-      translateY: mountains1Offscreen(mountains1.current),
-      easing: 'easeInOutSine',
-      duration: 300,
-    });
-
-    hideSectionAfterAnimation(700, { visible, section: section.current });
-  }
-
-  const showAnimated = (offset: number) => {
-    visible.current = true
-    setFirstLoad(false)
-    if (section.current) section.current.style.display = 'block';
-
-    anime({
-      targets: card.current,
-      translateY: cardMovement(offset, card.current, viewHeight),
-      easing: 'easeOutSine',
-      duration: 800,
-    });
-    delayAnimationCheckVisible({
-      targets: card.current,
-      opacity: 1,
-      easing: 'easeOutSine',
-      duration: 500,
-    }, 300, {visible, section: section.current}, true);
-
-    anime({
-      targets: clouds.current,
-      translateY: 0,
-      easing: 'easeOutSine',
-      opacity: 1,
-      duration: 700,
-    });
-
-    delayAnimationCheckVisible({
-      targets: mountains2.current,
-      translateY: mountains2Movement(offset, viewHeight),
-      easing: 'easeOutSine',
-      duration: 500,
-    }, 200, {visible, section: section.current}, true);
-
-    delayAnimationCheckVisible({
-      targets: mountains1.current,
-      translateY: mountains1Movement(offset, viewHeight),
-      easing: 'easeOutSine',
-      duration: 300,
-    }, 200, {visible, section: section.current}, true)
-      .then(() => {
-        completed()
-      });
-  };
-
-  const adjustAnimated = (offset:number) => {
-    if (showing || !visible.current) return;
-
-    if (card.current) card.current.style.transform = `translateY(${cardMovement(offset, card.current, viewHeight)}px)`;
-    if (mountains2.current) mountains2.current.style.transform = `translateY(${mountains2Movement(offset, viewHeight)}px)`;
-    if (mountains1.current) mountains1.current.style.transform = `translateY(${mountains1Movement(offset, viewHeight)}px)`;
-  }
 
   return (
     <div ref={section} className="section mountains">
