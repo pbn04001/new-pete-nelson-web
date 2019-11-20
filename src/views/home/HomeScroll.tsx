@@ -8,7 +8,6 @@ import IntroSection from "./components/intro/IntroSection";
 import Svg from "../../components/svg/Svg";
 import MountainSection from "./components/mountains/MountainSection";
 
-
 const getViewHeight = (): number => {
   return window.innerHeight;
 };
@@ -53,7 +52,7 @@ class HomeScroll extends Component<HomeProps,HomeState> {
     super(props);
 
     this.state = {
-      currentSection: lockSection != null && lockSection >= 0 ? lockSection : 0,
+      currentSection: -1,
       lastSection: 0,
       hide: null,
       reset: null,
@@ -64,26 +63,34 @@ class HomeScroll extends Component<HomeProps,HomeState> {
   }
 
   componentDidMount(): void {
-    const { currentSection } = this.state
-    const isMobile = getIsMobile()
-    if (!isMobile)  {
-      this.stopInitialScroll();
-    }
-    window.addEventListener('resize', this.onResize);
+    this.setState({
+      currentSection: lockSection != null && lockSection >= 0 ? lockSection : 0
+    })
+  }
 
-    this.updateBackground(sectionSizes[currentSection].bodyClass, true);
+  componentDidUpdate(prevProps: Readonly<HomeProps>, prevState: Readonly<HomeState>, snapshot?: any): void {
+    if (prevState.currentSection === -1 && this.state.currentSection >= 0) {
+      const {currentSection} = this.state
+      const isMobile = getIsMobile()
+      if (!isMobile) {
+        this.stopInitialScroll();
+      }
+      window.addEventListener('resize', this.onResize);
 
-    if (!isMobile) {
-      this.loadAnimations();
-    } else {
-      //TODO show everything for mobile
-      // this.sections.forEach((section, index) => {
-      //   this.sections[index].showAssets();
-      // });
+      this.updateBackground(sectionSizes[currentSection].bodyClass, true);
+
+      if (!isMobile) {
+        this.loadAnimations();
+      } else {
+        //TODO show everything for mobile
+        // this.sections.forEach((section, index) => {
+        //   this.sections[index].showAssets();
+        // });
+      }
     }
   }
 
-  sectionCompleted = (hash: string) => {
+  sectionCompleted = () => {
     this.setState({
       swapping: null,
     })
@@ -105,7 +112,7 @@ class HomeScroll extends Component<HomeProps,HomeState> {
         this.calculatePageSize();
         debounce(() => this.setReset(currentSection), 200);
       }
-    } else if (!isMobile) { // Only run once when first viewing mobile
+    } else if (!isMobile) {
       if (this.pageScroll.current) this.pageScroll.current.style.height = 'auto';
       this.setReset()
     }
@@ -238,7 +245,6 @@ class HomeScroll extends Component<HomeProps,HomeState> {
           top={lastSection === 0}
           showing={swapping != null}
           completed={this.sectionCompleted}
-          hash="intro"
         />
         <MountainSection
           viewHeight={getViewHeight()}
@@ -248,7 +254,6 @@ class HomeScroll extends Component<HomeProps,HomeState> {
           adjust={this.getAdjustAmount(1)}
           top={lastSection < 1}
           showing={swapping != null}
-          hash="mountain"
           completed={this.sectionCompleted}
         />
         <div className="scroll-down">

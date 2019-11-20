@@ -1,7 +1,7 @@
 import { MutableRefObject } from 'react';
 import anime from 'animejs';
 
-type AnimationComponent = {
+export type AnimationComponent = {
   visible: MutableRefObject<boolean>,
   section?: HTMLDivElement | null,
 }
