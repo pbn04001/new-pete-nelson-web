@@ -95,37 +95,19 @@ class HomeScroll extends Component<HomeProps,HomeState> {
     document.body.style.overflow = 'hidden';
   };
 
-  resetNoVisibleSections = () => {
-    this.setState((state) => ({
-      reset: state.currentSection,
-    }));
-    setTimeout(() => {
-      this.setState({
-        reset: null,
-      })
-    }, 1)
-  };
-
   onResize = () => {
-    const { hasLoadedAnimations } = this.state;
+    const { hasLoadedAnimations, currentSection } = this.state;
     const isMobile = getIsMobile();
     if (!isMobile) {
       if (!hasLoadedAnimations) {
         this.loadAnimations();
       } else {
         this.calculatePageSize();
-        debounce(this.resetNoVisibleSections, 200);
+        debounce(() => this.setReset(currentSection), 200);
       }
     } else if (!isMobile) { // Only run once when first viewing mobile
       if (this.pageScroll.current) this.pageScroll.current.style.height = 'auto';
-      this.setState({
-        reset: -1
-      })
-      setTimeout(() => {
-        this.setState({
-          reset: null
-        })
-      },1)
+      this.setReset()
     }
   }
 
@@ -224,28 +206,47 @@ class HomeScroll extends Component<HomeProps,HomeState> {
     //   });
   }
 
+  setReset = (exclude: number = -1) => {
+    this.setState({
+      reset: exclude,
+    });
+    setTimeout(() => {
+      this.setState({
+        reset: null,
+      })
+    }, 1)
+  };
+
+  shouldShow = (section: number) => this.state.currentSection === section
+
+  shouldHide = (section: number) => (this.state.hide !== null && this.state.hide === section) || false
+
+  shouldReset = (section: number) => this.state.reset !== null && this.state.reset !== section
+
+  getAdjustAmount = (section: number) => (this.state.currentSection === section && this.state.adjust) || null
+
   render() {
-    const { currentSection, lastSection, hide, reset, swapping, adjust } = this.state;
+    const { lastSection,swapping } = this.state;
     return (
       <div className="one-page-scroll" ref={this.pageScroll}>
         <IntroSection
           viewHeight={getViewHeight()}
-          show={currentSection === 0}
-          hide={(hide !== null && hide === 0) || false}
-          reset={reset !== null && reset !== 1}
+          show={this.shouldShow(0)}
+          hide={this.shouldHide(0)}
+          reset={this.shouldReset(0)}
+          adjust={this.getAdjustAmount(0)}
           top={lastSection === 0}
-          adjust={currentSection === 0 && adjust || null}
           showing={swapping != null}
           completed={this.sectionCompleted}
           hash="intro"
         />
         <MountainSection
           viewHeight={getViewHeight()}
-          show={currentSection === 1}
-          hide={(hide !== null && hide === 1) || false}
-          reset={reset !== null && reset !== 1}
+          show={this.shouldShow(1)}
+          hide={this.shouldHide(1)}
+          reset={this.shouldReset(1)}
+          adjust={this.getAdjustAmount(1)}
           top={lastSection < 1}
-          adjust={currentSection === 1 && adjust || null}
           showing={swapping != null}
           hash="mountain"
           completed={this.sectionCompleted}
