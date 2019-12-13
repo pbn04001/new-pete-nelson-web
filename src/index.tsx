@@ -4,13 +4,18 @@ import { withApollo } from 'react-apollo'
 import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo'
 
-import {isProd} from "./utils/envs";
+import {isProd, isLocal} from "./utils/envs";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 import './index.css';
 
-const url = `https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/${isProd() ? 'prod' : 'dev'}/graphql`
+let url = `${isProd() ?
+  'https://ttu0bk9oc0.execute-api.us-west-2.amazonaws.com/prod' :
+  'https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/dev'}/graphql`
+if (isLocal()) {
+  url = 'http://localhost:3000/graphql'
+}
 
 const httpLink = new HttpLink({ uri: url });
 

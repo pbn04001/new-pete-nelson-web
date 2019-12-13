@@ -20,7 +20,7 @@ async function execute(command) {
 
 (async function() {
   try {
-    await execute('apollo schema:download --endpoint=https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/dev/graphql graphql-schema.json')
+    await execute('apollo schema:download --endpoint=https://ttu0bk9oc0.execute-api.us-west-2.amazonaws.com/prod/graphql graphql-schema.json')
     await execute('apollo codegen:generate --localSchemaFile=graphql-schema.json --target=typescript --includes=src/**/*.ts --tagName=gql --addTypename --globalTypesFile=src/types/graphql-global-types.ts types')
   } catch (error) {
     console.log(error)
