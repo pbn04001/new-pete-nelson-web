@@ -1,0 +1,102 @@
+@import 'src/styles/_globals.scss';
+
+@keyframes scroll-down-arrow {
+  0% { top: 0; }
+  50% { top: 10px; }
+  100% { top: 0; }
+}
+
+.section {
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+.scroll-down {
+  display: none;
+}
+
+@media (min-width: $breakpoint-sm) {
+  .one-page-scroll {
+    height: 0;
+    overflow: hidden;
+    background-color: $black;
+
+    &--intro {
+      background-color: $black;
+      transition: background-color linear 1000ms;
+
+      .scroll-down {
+        display: block;
+      }
+    }
+    &--mountains {
+      background-color: $light-blue;
+      transition: background-color linear 1000ms;
+    }
+    &--forest {
+      background-color: $pale-blue;
+      transition: background-color linear 1000ms;
+    }
+    &--jungle {
+      background: $green-grad;
+      background-attachment: fixed;
+      transition: background-color linear 1000ms;
+    }
+    &--desert {
+      background-color: $pale-yellow;
+      transition: background-color linear 1000ms;
+    }
+  }
+
+  .section {
+    z-index: 0;
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .body--intro {
+    .section:nth-child(1) {
+      z-index: 100;
+    }
+  }
+
+  .body--mountains {
+    .section:nth-child(2) {
+      z-index: 100;
+    }
+  }
+
+  .scroll-down {
+    color: white;
+    position: fixed;
+    bottom: 1rem;
+    z-index: 100;
+    width: 10px;
+    left: 49%;
+
+    &__arrow {
+      position: relative;
+      margin-top: 0.5rem;
+      fill: $white;
+      transform: rotate(-90deg);
+      animation: scroll-down-arrow 1s ease-in-out infinite;
+      width: 10px;
+      height: 10px;
+    }
+
+    &__txt {
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-align: center;
+      line-height: 0.9rem;
+
+      & span {
+        display: block;
+      }
+    }
+  }
+}

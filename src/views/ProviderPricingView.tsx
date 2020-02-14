@@ -24,7 +24,6 @@ const ProvidersPricingView: React.FC<ProvidersPricingViewProps> = ({
  client,
  providers,
 }: ProvidersPricingViewProps) => {
-  console.log("UUID", providers.uuid)
   const [count, setCount ] = useState<number>(0)
   const [prices, updatePrices ] = useState<{ [key: number]: number }>({})
   const { data: newPrices, stopPolling } = useQuery<ProviderPrices, ProviderPricesVariables>(providerPricesQuery, {
@@ -34,10 +33,8 @@ const ProvidersPricingView: React.FC<ProvidersPricingViewProps> = ({
   })
 
   useEffect(() => {
-    console.log(`Polled ${count} times`)
     if (count >= 20) {
       stopPolling()
-      console.log('Done Polling')
     } else {
       setTimeout(() => { setCount(count + 1) }, 1000);
     }

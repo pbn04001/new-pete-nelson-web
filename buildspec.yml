@@ -11,7 +11,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - REACT_APP_ENVIRONMENT=${ENVIRONMENT} npm run build
+      - REACT_APP_ENVIRONMENT=${ENVIRONMENT} GENERATE_SOURCEMAP=false npm run build
   post_build:
     commands:
       # copy the contents of /build to S3

@@ -1,21 +1,22 @@
+import 'styles/main.scss';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { withApollo } from 'react-apollo'
 import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo'
+import SVG from 'react-inlinesvg-2';
 
-import {isProd, isLocal} from "./utils/envs";
+import {isProd} from "./utils/envs";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-import './index.css';
+const files = require.context('assets/icons', true, /.svg$/);
+files.keys().forEach(files);
 
-let url = `${isProd() ?
-  'https://ttu0bk9oc0.execute-api.us-west-2.amazonaws.com/prod' :
-  'https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/dev'}/graphql`
-if (isLocal()) {
-  url = 'http://localhost:3000/graphql'
-}
+const url = isProd() ?
+  'https://ttu0bk9oc0.execute-api.us-west-2.amazonaws.com/prod/graphql' :
+  'https://6or7w5l6lj.execute-api.us-west-2.amazonaws.com/dev/graphql'
 
 const httpLink = new HttpLink({ uri: url });
 
@@ -33,7 +34,8 @@ const AppWithApollo = withApollo(App)
 
 ReactDOM.render(
     <ApolloProvider client={client}>
-        <AppWithApollo />
+      <SVG src={`/sprite.svg`} />
+      <AppWithApollo />
     </ApolloProvider>,
     document.getElementById('root'));
 

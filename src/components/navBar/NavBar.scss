@@ -1,0 +1,191 @@
+@import 'src/styles/globals.scss';
+
+$bar-width: $spacing-unit-x3;
+$bar-height: 2px;
+$bar-spacing: 7px;
+
+.nav-bar {
+  background-color: $transparent-black;
+  position: fixed;
+  z-index: 200;
+  bottom: 0;
+  width: 100%;
+  height: $spacing-unit-x6;
+  overflow: visible;
+  display: flex;
+  justify-content: center;
+
+  &__menu {
+    @include font-delta;
+    color: $white;
+    position: absolute;
+    margin: $spacing-unit;
+    width: 5.5rem;
+    height: calc(#{$bar-height} + (#{$bar-spacing} * 2));
+    cursor: pointer;
+    text-align: right;
+  }
+
+  &__menu-hamburger,
+  &__menu-hamburger:after,
+  &__menu-hamburger:before {
+    width: $bar-width;
+    height: $bar-height;
+  }
+
+  &__menu-hamburger {
+    position: absolute;
+    top: 0.4rem;
+    left: 0;
+    transform: translateY($bar-spacing);
+    background: rgba(255, 255, 255, 1);
+    transition: all 0ms 300ms;
+
+    &--open {
+      background: rgba(255, 255, 255, 0);
+    }
+  }
+
+  &__menu-hamburger:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: $bar-spacing;
+    background: rgba(255, 255, 255, 1);
+    transition: bottom 300ms 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  &__menu-hamburger:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: $bar-spacing;
+    background: rgba(255, 255, 255, 1);
+    transition: top 300ms 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  &__menu-hamburger--open:after {
+    top: 0;
+    transform: rotate(45deg);
+    transition: top 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms 300ms cubic-bezier(0.23, 1, 0.32, 1);;
+  }
+
+  &__menu-hamburger--open:before {
+    bottom: 0;
+    transform: rotate(-45deg);
+    transition: bottom 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms 300ms cubic-bezier(0.23, 1, 0.32, 1);;
+  }
+
+  &__menu-body {
+    position: absolute;
+    bottom: $spacing-unit-x3;
+    right: -2rem;
+    overflow: hidden;
+    width: 10rem;
+
+    &--open {
+      opacity: 1;
+      height: 16rem;
+      transition: all linear 300ms;
+
+      ul {
+        top: 0;
+        transition: top linear 300ms;
+      }
+    }
+
+    &--close {
+      opacity: 0;
+      height: 0;
+      transition: all linear 500ms;
+
+      ul {
+        top: -50px;
+        transition: top linear 500ms;
+      }
+    }
+
+    ul {
+      position: absolute;
+      right: 0;
+    }
+    ul, li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: block;
+    }
+    a {
+      display: block;
+      color: $white;
+      background-color: $transparent-black;
+      padding: $spacing-unit $spacing-unit-x5 $spacing-unit-x2 $spacing-unit-x3;
+    }
+  }
+  &__github {
+    display: none;
+  }
+
+  &__twitter {
+    display: none;
+  }
+}
+
+@media (min-width: $breakpoint-sm) {
+  .nav-bar {
+    top: 0;
+    justify-content: flex-end;
+    height: $spacing-unit-x5;
+
+    &__link-mobile {
+      display: none;
+    }
+
+    &__menu {
+      @include font-epsilon;
+      top: .2rem;
+      width: 5rem;
+      right: 3rem;
+    }
+
+    &__github {
+      display: block;
+      position: absolute;
+      left: 1rem;
+      top: .3rem;
+
+      & svg {
+        width: 1.6rem;
+        height: 1.6rem;
+      }
+    }
+
+    &__twitter {
+      display: block;
+      position: absolute;
+      left: 3.5rem;
+      top: .3rem;
+
+      & svg {
+        width: 1.7rem;
+        height: 1.7rem;
+      }
+    }
+
+    &__menu-body {
+      top: 1.8rem;
+      bottom: $spacing-unit-x3;
+      padding-bottom: $spacing-unit;
+
+      &--open {
+        height: 7.5rem;
+      }
+    }
+
+    &__menu-hamburger {
+      top: 0;
+    }
+  }
+
+
+}

@@ -1,0 +1,136 @@
+@import "src/styles/_globals.scss";
+
+.intro {
+  background-color: $black;
+
+  &__card {
+    position: relative;
+    display: inline-block;
+    text-align: left;
+    z-index: 20;
+    margin: $spacing-unit-x8;
+
+    &_bar {
+      display: block;
+      height: .35rem;
+      margin: 2rem 0;
+      border: none;
+      background-color: $dark-blue;
+    }
+
+    &_sub {
+      opacity: 1;
+      color: $white;
+    }
+  }
+
+  &__pete-nelson {
+    height: $spacing-unit-x16;
+
+    .cls-1{
+      fill: $light-gray;
+    }
+    .cls-2,.cls-3,.cls-4{
+      fill: none;
+      stroke: $light-gray;
+      stroke-miterlimit: 10;
+    }
+    .cls-2{stroke-width:1.25rem;}
+    .cls-3{stroke-width:1rem;}
+    .cls-4{stroke-width:1.125rem}
+  }
+
+  &__cloud {
+    z-index: 2;
+    position: absolute;
+    width: 25%;
+    height: 25%;
+    opacity: .6;
+
+    & path,
+    & circle {
+      fill: $dark-blue;
+    }
+
+    &--1 {
+      top: 2.5%;
+      right: 26%;
+    }
+    &--2 {
+      top: 19%;
+      right: -3%;
+    }
+  }
+  &__moon {
+    z-index: 1;
+    position: absolute;
+    top: 10%;
+    right: 15%;
+    width: 20%;
+    height: 20%;
+  }
+  &__moon_back {
+    position: absolute;
+    width: 95%;
+    height: 95%;
+    top: -27.5%;
+    right: -22.5%;
+    opacity: 1;
+  }
+  &__sky_line {
+    position: absolute;
+    right: 0;
+    bottom: -2rem;
+    width: 100%;
+  }
+  &__sky_line--1 {
+    z-index: 13;
+  }
+  &__sky_line--2 {
+    z-index: 12;
+    bottom: -1.5rem;
+  }
+  &__sky_line--3 {
+    z-index: 11;
+    bottom: -1rem;
+  }
+}
+
+@media (min-width: $breakpoint-sm) {
+  .intro {
+    background-color: transparent;
+    &__card {
+      position: absolute;
+      display: block;
+      margin: 0;
+      top: $spacing-unit-x12;
+      left: $spacing-unit-x16;
+
+      &_sub {
+        opacity: 0;
+
+        &--show {
+          opacity: 1;
+          transition: opacity linear 500ms;
+        }
+      }
+    }
+
+    &__moon_back {
+      opacity: 0;
+
+      &--hide {
+        opacity: 0;
+        transition: opacity linear 300ms;
+      }
+      &--show {
+        opacity: 1;
+        transition: opacity linear 300ms;
+      }
+    }
+
+    &__pete-nelson {
+      height: 11rem;
+    }
+  }
+}
