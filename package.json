@@ -17,8 +17,8 @@
     "react-dom": "^16.11.0",
     "react-inlinesvg-2": "^1.1.9",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.2.0",
-    "svg-sprite-loader": "^4.1.6",
+    "react-scripts": "5.0.1",
+    "svg-sprite-loader": "^6.0.11",
     "typescript": "^3.7.2"
   },
   "scripts": {
